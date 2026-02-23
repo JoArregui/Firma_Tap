@@ -195,7 +195,7 @@ class _FirmaDocumentoPageState extends State<FirmaDocumentoPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
 
                 children: [
-                  Text('Tip. Doc.: ${doc.tipoDocumento}'),
+                  Text('Documento: ${doc.tipoDocumento}'),
                   Text('Nº: ${doc.numero}'),
                   Text('Fecha: ${formatoFecha.format(doc.fecha)}'),
                   Text('Hora: $horaActual'),
