@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
       final cambiar = await showDialog<bool>(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text('Usuario no activo'),
+          title: const Text('Usuarios no activo'),
           content: const Text('¿Deseas cambiar de usuario para continuar?'),
           actions: [
             TextButton(
@@ -138,7 +138,6 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-
               ),
             ),
             const SizedBox(height: 20),
