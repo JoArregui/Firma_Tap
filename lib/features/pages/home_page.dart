@@ -39,6 +39,8 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  /*
+  Se comenta ese metodo en para usarse en caso de ser necesario
   void _confirmarUsuario(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     final usuarioGuardado = prefs.getInt('usuarioId') ?? widget.usuarioId;
@@ -89,7 +91,7 @@ class _HomePageState extends State<HomePage> {
         ),
       );
     }
-  }
+  }*/
 
 
 
@@ -146,12 +148,13 @@ class _HomePageState extends State<HomePage> {
                 crossAxisSpacing: 15,
                 mainAxisSpacing: 15,
                 children: [
-                  _buildMenuButton(
+                  //Comentamos el boton de albaranes porque de momento no hace falta
+                 /* _buildMenuButton(
                     context,
                     title: 'Albaranes',
                     color: Colors.blue,
                     destination: const AlbaranPendientePage(),
-                  ),
+                  ),*/
                   _buildMenuButton(
                     context,
                     title: 'Documentos',
