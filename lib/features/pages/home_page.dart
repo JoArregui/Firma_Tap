@@ -122,10 +122,23 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text('Usuario: $_usuarioId',
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+                Text('Empresa: ${widget.empresa}',
+                  style: const TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
             const Text('Lista de Opciones:',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+
               ),
             ),
             const SizedBox(height: 20),
