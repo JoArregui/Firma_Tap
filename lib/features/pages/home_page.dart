@@ -4,7 +4,6 @@ import 'package:app_control_albaranes/features/pages/login_page.dart';
 import 'package:app_control_albaranes/features/pages/select_user_page.dart';
 import 'package:flutter/material.dart';
 import 'package:app_control_albaranes/features/pages/albaran_pendiente_page.dart';
-import 'package:app_control_albaranes/features/pages/firmas_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -48,7 +47,7 @@ class _HomePageState extends State<HomePage> {
       final cambiar = await showDialog<bool>(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text('Usuario no activo'),
+          title: const Text('Usuarios no activo'),
           content: const Text('¿Deseas cambiar de usuario para continuar?'),
           actions: [
             TextButton(
@@ -138,7 +137,6 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-
               ),
             ),
             const SizedBox(height: 20),
