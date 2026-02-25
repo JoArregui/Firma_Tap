@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/utils/animated_routes.dart';
 import '../Services/empresa_service.dart';
 import '../models/empresa_dto.dart';
 
@@ -92,85 +93,22 @@ class _HomePageState extends State<HomePage> {
       await prefs.setString('empresa', nuevaEmpresa);
 
       if (context.mounted) {
-        Navigator.push(
+        navegarAnimado(
           context,
-          MaterialPageRoute( builder:
-              (_) => DocumentosPage( usuarioId: nuevoId, empresa: nuevaEmpresa,
-          ),
-          ),
+          DocumentosPage(usuarioId: nuevoId, empresa: nuevaEmpresa),
         );
+
       }
     }
   }
 
-  Future<void> _gotoConfig() async{
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const ConfigurationPage()),
-    );
-    // Al volver, recargamos los datos
+  Future<void> _gotoConfig() async {
+    await navegarAnimado(context, const ConfigurationPage());
     if (context.mounted) {
       _cargarDatos();
       _cargarDescripcionEmpresa();
     }
   }
-
-
-  /*
-  Se comenta ese metodo en para usarse en caso de ser necesario
-  void _confirmarUsuario(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    final usuarioGuardado = prefs.getInt('usuarioId') ?? widget.usuarioId;
-
-    if (usuarioGuardado != widget.usuarioId) {
-      final cambiar = await showDialog<bool>(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: const Text('Usuarios no activo'),
-          content: const Text('¿Deseas cambiar de usuario para continuar?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Cambiar usuario'),
-            ),
-          ],
-        ),
-      );
-
-      if (cambiar == true) {
-        final nuevoId = await Navigator.push<int>(
-          context,
-          MaterialPageRoute(builder: (_) => const SelectUserPage()),
-        );
-
-        if (nuevoId != null) {
-          await prefs.setInt('usuarioId', nuevoId);
-          if (mounted) {
-            setState(() => _usuarioId = nuevoId);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => DocumentosPage(usuarioId: nuevoId, empresa: widget.empresa),
-              ),
-            );
-          }
-        }
-      }
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => DocumentosPage(usuarioId: usuarioGuardado, empresa: widget.empresa),
-        ),
-      );
-    }
-  }*/
-
-
 
   @override
   Widget build(BuildContext context) {
