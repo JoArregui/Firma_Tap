@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -116,10 +117,10 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
             const Text('Selecciona tu empresa:', style: TextStyle(fontSize: 18)),
             const SizedBox(height: 10),
             _cargandoEmpresas
-                ? const Padding(
-              padding: EdgeInsets.all(16),
-              child: CircularProgressIndicator(),
-            )
+                ? const CircularProgressIndicator()
+                .animate()
+                .fadeIn(duration: 400.ms)
+                .scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOut)
                 : DropdownButton<EmpresaDTO>(
               value: _empresaSeleccionada,
               items: _empresas.map((e) {
