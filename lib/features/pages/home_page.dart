@@ -3,6 +3,7 @@ import 'package:app_control_albaranes/features/pages/documentos_page.dart';
 import 'package:app_control_albaranes/features/pages/login_page.dart';
 import 'package:app_control_albaranes/features/pages/select_user_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Services/empresa_service.dart';
@@ -214,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-            ),
+            ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.2),
             const SizedBox(height: 30),
             const Text('Opciones disponibles:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
             const SizedBox(height: 20),
@@ -267,7 +268,11 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-      ),
+      )
+        .animate()
+        .fadeIn(duration: 500.ms)
+        .slideY(begin: 0.2)
+        .scale(begin: const Offset(0.95, 0.95), curve: Curves.easeOut),
     );
   }
 
