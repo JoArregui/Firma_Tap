@@ -1,12 +1,64 @@
-import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+import 'dart:math';
 
-class ConfigurationPage extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Services/empresa_service.dart';
+import '../models/empresa_dto.dart';
+
+class ConfigurationPage extends StatefulWidget {
   const ConfigurationPage({super.key});
 
-  Future<String> _getVersion() async {
-    final info = await PackageInfo.fromPlatform();
-    return 'Versión ${info.version} (Build ${info.buildNumber})';
+  @override
+  State<ConfigurationPage> createState() => _ConfigurationPageState();
+}
+
+class _ConfigurationPageState extends State<ConfigurationPage> {
+  List<EmpresaDTO> _empresas = [];
+  EmpresaDTO? _empresaSeleccionada;
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarEmpresas();
+  }
+
+  Future<void> _cargarEmpresas() async{
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      final codGuardado = prefs.getString('empresa');
+
+      final empresas = await EmpresaService.obtenerEmpresas();
+      EmpresaDTO empresaSeleccionada = empresas.first;
+
+      if(codGuardado != null){
+        final encontrada = empresas.firstWhere(
+            (e) => e.codigo == codGuardado,
+        orElse: () => empresaSeleccionada,
+        );
+        empresaSeleccionada = encontrada;
+      }
+
+      setState(() {
+        _empresas = empresas;
+        _empresaSeleccionada = empresaSeleccionada;
+      });
+    }catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al cargar empresas: $e')),
+      );
+    }
+  }
+
+  Future<void> _guardarEmpresa(EmpresaDTO empresa) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('empresa', empresa.codigo);
+    setState(() {
+      _empresaSeleccionada = empresa;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Empresa actualizada')),
+    );
   }
 
   @override
@@ -19,35 +71,26 @@ class ConfigurationPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: Center(
-        child: FutureBuilder<String>(
-          future: _getVersion(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            }
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.build_circle, size: 80, color: Colors.grey),
-                const SizedBox(height: 20),
-                const Text(
-                  'Página en mantenimiento',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  'Estamos trabajando en esta sección.\nVuelve pronto.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-                const SizedBox(height: 30),
-                Text(
-                  snapshot.data ?? '',
-                  style: const TextStyle(fontSize: 14, color: Colors.black54),
-                ),
-              ],
-            );
-          },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.settings, size: 80, color: Colors.grey),
+            const SizedBox(height: 20),
+            const Text('Selecciona tu empresa:', style: TextStyle(fontSize: 18)),
+            const SizedBox(height: 10),
+            DropdownButton<EmpresaDTO>(
+              value: _empresaSeleccionada,
+              items: _empresas.map((e){
+               return DropdownMenuItem<EmpresaDTO>(
+                 value: e,
+                 child: Text(e.descripcion),
+               );
+              }).toList(),
+              onChanged: (value) {
+                if (value != null) _guardarEmpresa(value);
+              },
+            ),
+          ],
         ),
       ),
     );
