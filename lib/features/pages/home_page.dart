@@ -128,9 +128,6 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text('Usuario: $_usuarioId',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                ),
                 Text('Empresa: $_empresa',
                   style: const TextStyle(fontSize: 16, color: Colors.grey),
                 ),
