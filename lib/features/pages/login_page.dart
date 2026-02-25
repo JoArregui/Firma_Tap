@@ -37,12 +37,10 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _guardarYEntrar() async{
     final userId = int.tryParse(_usuarioController.text);
-    final empresa = _empresaSeleccionada?.codigo ?? '';
     if(userId != null){
       final prefs = await SharedPreferences.getInstance();
       await prefs.setInt('usuarioId', userId);
-      await prefs.setString('empresa', empresa);
-      _goToDocumentos(userId, empresa);
+      _goToDocumentos(userId, '');
     }
   }
 
@@ -88,24 +86,6 @@ class _LoginPageState extends State<LoginPage> {
                   value == null || value.isEmpty ? 'Introduce tu ID' : null,
               ),
               const SizedBox(height: 16),
-              DropdownButtonFormField<EmpresaDTO>(
-                  value: _empresaSeleccionada,
-                  items: _empresas.map((empresa) {
-                    return DropdownMenuItem(
-                      value: empresa,
-                        child: Text(empresa.descripcion),
-                    );
-                  }).toList(),
-                  onChanged: (empresa){
-                    setState((){
-                      _empresaSeleccionada = empresa;
-                    });
-                  },
-                decoration: const InputDecoration(
-                  labelText: 'Empresa',
-                  border: OutlineInputBorder(),
-                ),
-              ),
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () {

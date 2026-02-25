@@ -3,7 +3,6 @@ import 'package:app_control_albaranes/features/pages/documentos_page.dart';
 import 'package:app_control_albaranes/features/pages/login_page.dart';
 import 'package:app_control_albaranes/features/pages/select_user_page.dart';
 import 'package:flutter/material.dart';
-import 'package:app_control_albaranes/features/pages/albaran_pendiente_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -21,22 +20,25 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late int _usuarioId;
+  late String _empresa;
 
   @override
   void initState(){
     super.initState();
     _usuarioId = widget.usuarioId;
-    _cargarUsuario();
+    _empresa = widget.empresa;
+    _cargarDatos();
   }
 
-  Future<void> _cargarUsuario() async {
+  Future<void> _cargarDatos() async {
     final prefs = await SharedPreferences.getInstance();
     final nuevoId = prefs.getInt('usuarioId');
-    if (nuevoId != null && nuevoId != _usuarioId) {
-      setState(() {
-        _usuarioId = nuevoId;
-      });
-    }
+    final nuevaEmpresa = prefs.getString('empresa');
+
+    setState(() {
+      if (nuevoId != null) _usuarioId = nuevoId;
+      if(nuevaEmpresa != null) _empresa = nuevaEmpresa;
+    });
   }
 
   /*
@@ -129,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                 Text('Usuario: $_usuarioId',
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
-                Text('Empresa: ${widget.empresa}',
+                Text('Empresa: $_empresa',
                   style: const TextStyle(fontSize: 16, color: Colors.grey),
                 ),
               ],
@@ -187,7 +189,16 @@ class _HomePageState extends State<HomePage> {
                     context,
                     title: 'Configuración',
                     color: Colors.blueGrey,
-                    destination: const ConfigurationPage(), // puedes reemplazarlo por una lógica de logout
+                    onPressed: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ConfigurationPage()),
+                      );
+                      // Al volver, recargamos los datos
+                      if (context.mounted) {
+                        _cargarDatos();
+                      }
+                    },
                   ),
                 ],
               ),
