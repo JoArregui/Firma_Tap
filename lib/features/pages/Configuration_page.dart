@@ -89,7 +89,6 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
             const Icon(Icons.settings, size: 80, color: Colors.grey),
             const SizedBox(height: 20),
             Padding(
