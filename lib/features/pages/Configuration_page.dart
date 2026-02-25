@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Services/empresa_service.dart';
@@ -16,11 +18,20 @@ class ConfigurationPage extends StatefulWidget {
 class _ConfigurationPageState extends State<ConfigurationPage> {
   List<EmpresaDTO> _empresas = [];
   EmpresaDTO? _empresaSeleccionada;
+  String _version = '';
 
   @override
   void initState() {
     super.initState();
     _cargarEmpresas();
+    _cargarVersion();
+  }
+
+  Future<void> _cargarVersion() async{
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _version = '${info.version}+${info.buildNumber}';
+    });
   }
 
   Future<void> _cargarEmpresas() async{
@@ -63,6 +74,10 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _endpointController = TextEditingController(
+      text: 'https://pirineosapi.ecomputer.es/Empresa/GetEmpresas'
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Configuración'),
@@ -76,6 +91,24 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
           children: [
             const Icon(Icons.settings, size: 80, color: Colors.grey),
             const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: SizedBox(
+                width: 450, // Ajusta este valor según el ancho deseado
+                child: TextFormField(
+                  controller: _endpointController,
+                  enabled: false,
+                  decoration: const InputDecoration(
+                    labelText: 'Enlace',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  ),
+                  style: const TextStyle(color: Colors.grey),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            const SizedBox(height: 30, width: 15),
             const Text('Selecciona tu empresa:', style: TextStyle(fontSize: 18)),
             const SizedBox(height: 10),
             DropdownButton<EmpresaDTO>(
@@ -90,6 +123,8 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                 if (value != null) _guardarEmpresa(value);
               },
             ),
+            const SizedBox(height: 30),
+            Text('Versión de la app: $_version', style: const TextStyle(color: Colors.grey)),
           ],
         ),
       ),

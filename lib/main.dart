@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: 'Control de Albaranes',
       home: LoginPage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

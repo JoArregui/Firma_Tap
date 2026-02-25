@@ -5,6 +5,9 @@ import 'package:app_control_albaranes/features/pages/select_user_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Services/empresa_service.dart';
+import '../models/empresa_dto.dart';
+
 class HomePage extends StatefulWidget {
   final int usuarioId;
   final String empresa;
@@ -21,6 +24,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late int _usuarioId;
   late String _empresa;
+  String _Descripcion = '';
 
   @override
   void initState(){
@@ -28,6 +32,7 @@ class _HomePageState extends State<HomePage> {
     _usuarioId = widget.usuarioId;
     _empresa = widget.empresa;
     _cargarDatos();
+    _cargarDescripcionEmpresa();
   }
 
   Future<void> _cargarDatos() async {
@@ -40,6 +45,29 @@ class _HomePageState extends State<HomePage> {
       if(nuevaEmpresa != null) _empresa = nuevaEmpresa;
     });
   }
+
+  Future<void> _cargarDescripcionEmpresa() async {
+    final prefs = await SharedPreferences.getInstance();
+    final codigo = prefs.getString('empresa');
+
+    if (codigo != null) {
+      try {
+        final empresas = await EmpresaService.obtenerEmpresas();
+        final empresa = empresas.firstWhere(
+              (e) => e.codigo == codigo,
+          orElse: () => EmpresaDTO(codigo: codigo, descripcion: codigo),
+        );
+        setState(() {
+          _Descripcion = empresa.descripcion;
+        });
+      } catch (e) {
+        setState(() {
+          _Descripcion = codigo; // fallback si falla
+        });
+      }
+    }
+  }
+
 
   /*
   Se comenta ese metodo en para usarse en caso de ser necesario
@@ -128,11 +156,8 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text('Usuario: $_usuarioId',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                ),
-                Text('Empresa: $_empresa',
-                  style: const TextStyle(fontSize: 16, color: Colors.grey),
+                Text('Empresa: $_Descripcion',
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
                 ),
               ],
             ),
@@ -159,7 +184,7 @@ class _HomePageState extends State<HomePage> {
                   ),*/
                   _buildMenuButton(
                     context,
-                    title: 'Documentos',
+                    title: 'Firmas Pendientes',
                     color: Colors.deepPurple,
                       onPressed: () async {
                       final resultado = await Navigator.push<Map<String, dynamic>>(
@@ -197,6 +222,7 @@ class _HomePageState extends State<HomePage> {
                       // Al volver, recargamos los datos
                       if (context.mounted) {
                         _cargarDatos();
+                        _cargarDescripcionEmpresa();
                       }
                     },
                   ),
