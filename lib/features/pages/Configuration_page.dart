@@ -89,25 +89,29 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+
             const Icon(Icons.settings, size: 80, color: Colors.grey),
             const SizedBox(height: 20),
-            const Text('Selecciona tu empresa:', style: TextStyle(fontSize: 18)),
-            const SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextFormField(
-                controller: _endpointController,
-                enabled: false,
-                decoration: const InputDecoration(
-                  labelText: 'Enlace conecct',
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: SizedBox(
+                width: 450, // Ajusta este valor según el ancho deseado
+                child: TextFormField(
+                  controller: _endpointController,
+                  enabled: false,
+                  decoration: const InputDecoration(
+                    labelText: 'Enlace',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  ),
+                  style: const TextStyle(color: Colors.grey),
+                  textAlign: TextAlign.center,
                 ),
-                style: const TextStyle(color: Colors.grey),
-                textAlign: TextAlign.center,
               ),
             ),
             const SizedBox(height: 30, width: 15),
+            const Text('Selecciona tu empresa:', style: TextStyle(fontSize: 18)),
+            const SizedBox(height: 10),
             DropdownButton<EmpresaDTO>(
               value: _empresaSeleccionada,
               items: _empresas.map((e){
