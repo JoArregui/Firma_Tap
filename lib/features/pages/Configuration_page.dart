@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,6 +20,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
   List<EmpresaDTO> _empresas = [];
   EmpresaDTO? _empresaSeleccionada;
   String _version = '';
+  bool _cargandoEmpresas = true;
 
   @override
   void initState() {
@@ -35,6 +37,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
   }
 
   Future<void> _cargarEmpresas() async{
+    setState(() => _cargandoEmpresas = true);
     try{
       final prefs = await SharedPreferences.getInstance();
       final codGuardado = prefs.getString('empresa');
@@ -58,6 +61,8 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al cargar empresas: $e')),
       );
+    }finally{
+      setState(() => _cargandoEmpresas = false);
     }
   }
 
@@ -111,13 +116,18 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
             const SizedBox(height: 30, width: 15),
             const Text('Selecciona tu empresa:', style: TextStyle(fontSize: 18)),
             const SizedBox(height: 10),
-            DropdownButton<EmpresaDTO>(
+            _cargandoEmpresas
+                ? const CircularProgressIndicator()
+                .animate()
+                .fadeIn(duration: 400.ms)
+                .scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOut)
+                : DropdownButton<EmpresaDTO>(
               value: _empresaSeleccionada,
-              items: _empresas.map((e){
-               return DropdownMenuItem<EmpresaDTO>(
-                 value: e,
-                 child: Text(e.descripcion),
-               );
+              items: _empresas.map((e) {
+                return DropdownMenuItem<EmpresaDTO>(
+                  value: e,
+                  child: Text(e.descripcion),
+                );
               }).toList(),
               onChanged: (value) {
                 if (value != null) _guardarEmpresa(value);

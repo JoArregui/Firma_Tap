@@ -3,8 +3,10 @@ import 'package:app_control_albaranes/features/pages/documentos_page.dart';
 import 'package:app_control_albaranes/features/pages/login_page.dart';
 import 'package:app_control_albaranes/features/pages/select_user_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/utils/animated_routes.dart';
 import '../Services/empresa_service.dart';
 import '../models/empresa_dto.dart';
 
@@ -68,80 +70,58 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-
-  /*
-  Se comenta ese metodo en para usarse en caso de ser necesario
-  void _confirmarUsuario(BuildContext context) async {
+  Future<void> _logout() async{
     final prefs = await SharedPreferences.getInstance();
-    final usuarioGuardado = prefs.getInt('usuarioId') ?? widget.usuarioId;
+    await prefs.clear();
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginPage()),
+            (route) => false,
+    );
+  }
 
-    if (usuarioGuardado != widget.usuarioId) {
-      final cambiar = await showDialog<bool>(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: const Text('Usuarios no activo'),
-          content: const Text('¿Deseas cambiar de usuario para continuar?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Cambiar usuario'),
-            ),
-          ],
-        ),
-      );
+  Future<void> _goToPendientes() async{
+    final resultado = await Navigator.push<Map<String, dynamic>>(
+      context,
+      MaterialPageRoute(builder: (_) => const SelectUserPage()),
+    );
+    if (resultado != null) {
+      final nuevoId = resultado['usuarioId'] as int;
+      final nuevaEmpresa = resultado['empresa'] as String;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('usuarioId', nuevoId);
+      await prefs.setString('empresa', nuevaEmpresa);
 
-      if (cambiar == true) {
-        final nuevoId = await Navigator.push<int>(
+      if (context.mounted) {
+        navegarAnimado(
           context,
-          MaterialPageRoute(builder: (_) => const SelectUserPage()),
+          DocumentosPage(usuarioId: nuevoId, empresa: nuevaEmpresa),
         );
 
-        if (nuevoId != null) {
-          await prefs.setInt('usuarioId', nuevoId);
-          if (mounted) {
-            setState(() => _usuarioId = nuevoId);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => DocumentosPage(usuarioId: nuevoId, empresa: widget.empresa),
-              ),
-            );
-          }
-        }
       }
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => DocumentosPage(usuarioId: usuarioGuardado, empresa: widget.empresa),
-        ),
-      );
     }
-  }*/
+  }
 
-
+  Future<void> _gotoConfig() async {
+    await navegarAnimado(context, const ConfigurationPage());
+    if (context.mounted) {
+      _cargarDatos();
+      _cargarDescripcionEmpresa();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isTablet = screenWidth > 600;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Menú principal'),
         actions: [
           IconButton(
-              icon:const Icon(Icons.logout),
-              onPressed: () async{
-                final prefs = await SharedPreferences.getInstance();
-                await prefs.clear();
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (_) => const LoginPage()),
-                    (route) => false,
-                );
-              },
+            icon:const Icon(Icons.logout),
+            onPressed: _logout,
           )
         ],
         centerTitle: true,
@@ -149,82 +129,51 @@ class _HomePageState extends State<HomePage> {
         foregroundColor: Colors.white,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text('Empresa: $_Descripcion',
-                  style: const TextStyle(fontSize: 16, color: Colors.black),
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Padding(padding: const EdgeInsets.all(16),
+                child: Row(
+                  //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Icon(Icons.business_center, size: 48, color: Colors.indigo),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Empresa: $_Descripcion', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold , color: Colors.black)),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            const Text('Lista de Opciones:',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
               ),
-            ),
+            ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.2),
+            const SizedBox(height: 30),
+            const Text('Opciones disponibles:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
             const SizedBox(height: 20),
             Expanded(
               child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 15,
-                mainAxisSpacing: 15,
+                crossAxisCount: isTablet ? 3 :2,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
                 children: [
-                  //Comentamos el boton de albaranes porque de momento no hace falta
-                 /* _buildMenuButton(
-                    context,
-                    title: 'Albaranes',
-                    color: Colors.blue,
-                    destination: const AlbaranPendientePage(),
-                  ),*/
-                  _buildMenuButton(
-                    context,
-                    title: 'Firmas Pendientes',
+                  _buildMenuCard(
+                    icon: Icons.description,
+                    label: 'Firmas Pendientes',
                     color: Colors.deepPurple,
-                      onPressed: () async {
-                      final resultado = await Navigator.push<Map<String, dynamic>>(
-                        context,
-                        MaterialPageRoute(builder: (_) => const SelectUserPage()),
-                      );
-                      if (resultado != null) {
-                        final nuevoId = resultado['usuarioId'] as int;
-                        final nuevaEmpresa = resultado['empresa'] as String;
-                        final prefs = await SharedPreferences.getInstance();
-                        await prefs.setInt('usuarioId', nuevoId);
-                        await prefs.setString('empresa', nuevaEmpresa);
-
-                        if (context.mounted) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute( builder:
-                                (_) => DocumentosPage( usuarioId: nuevoId, empresa: nuevaEmpresa,
-                                ),
-                            ),
-                          );
-                        }
-                      }
-                    },
+                    onTap: _goToPendientes,
                   ),
-                  _buildMenuButton(
-                    context,
-                    title: 'Configuración',
-                    color: Colors.blueGrey,
-                    onPressed: () async {
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const ConfigurationPage()),
-                      );
-                      // Al volver, recargamos los datos
-                      if (context.mounted) {
-                        _cargarDatos();
-                        _cargarDescripcionEmpresa();
-                      }
-                    },
+                  _buildMenuCard(
+                      icon: Icons.settings,
+                      label: 'Configuración',
+                      color: Colors.blueGrey,
+                      onTap: _gotoConfig
                   ),
                 ],
               ),
@@ -234,6 +183,37 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  Widget _buildMenuCard({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+}){
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        color: color,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 48, color: Colors.white),
+              const SizedBox(height: 12),
+              Text(label, style: const TextStyle(fontSize: 16, color: Colors.white)),
+            ],
+          ),
+        ),
+      )
+        .animate()
+        .fadeIn(duration: 500.ms)
+        .slideY(begin: 0.2)
+        .scale(begin: const Offset(0.95, 0.95), curve: Curves.easeOut),
+    );
+  }
+
 
   Widget _buildMenuButton(
       BuildContext context, {
