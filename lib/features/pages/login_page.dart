@@ -2,6 +2,7 @@ import 'package:app_control_albaranes/features/Services/empresa_service.dart';
 import 'package:app_control_albaranes/features/models/empresa_dto.dart';
 import 'package:app_control_albaranes/features/pages/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'documentos_page.dart';
 
@@ -78,6 +79,15 @@ class _LoginPageState extends State<LoginPage> {
           key: _formKey,
           child: Column(
             children: [
+              const SizedBox(height: 60),
+              Image.asset(
+                  'assets/images/login_banner.png',
+              height: 200,
+              fit: BoxFit.contain,
+              )
+              .animate()
+              .fadeIn(duration: 500.ms)
+              .slideY(begin: -0.2),
               TextFormField(
                 controller: _usuarioController,
                 keyboardType: TextInputType.number,
