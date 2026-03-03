@@ -84,8 +84,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     // Navegar a la HomePage con animación
     await Future.delayed(const Duration(milliseconds: 300)); // da tiempo a mostrar el snackbar
 
-    Navigator.pushReplacement(
-      context,
+    Navigator.of(context).pushAndRemoveUntil(
       PageRouteBuilder(
         pageBuilder: (_, __, ___) => HomePage(
           usuarioId: userId,
@@ -102,6 +101,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
           return SlideTransition(position: offsetAnimation, child: child);
         },
       ),
+        (route) => false,
     );
   }
 
