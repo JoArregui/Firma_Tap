@@ -146,7 +146,7 @@ class _HomePageState extends State<HomePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Empresa: $_Descripcion', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold , color: Colors.black)),
+                          Text( '$_Descripcion', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold , color: Colors.black)),
                         ],
                       ),
                     ),

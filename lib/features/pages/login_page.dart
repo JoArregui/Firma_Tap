@@ -2,6 +2,7 @@ import 'package:app_control_albaranes/features/Services/empresa_service.dart';
 import 'package:app_control_albaranes/features/models/empresa_dto.dart';
 import 'package:app_control_albaranes/features/pages/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'documentos_page.dart';
 
@@ -72,31 +73,55 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Iniciar sesión')),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _usuarioController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'ID de usuario'),
-                validator: (value) =>
-                  value == null || value.isEmpty ? 'Introduce tu ID' : null,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 30),
+                    Image.asset(
+                      'assets/images/login_banner.png',
+                      height: 200,
+                      fit: BoxFit.contain,
+                    )
+                        .animate()
+                        .fadeIn(duration: 500.ms)
+                        .slideY(begin: -0.2),
+                    SizedBox(height: 10),
+                    SizedBox(
+                      width: 420,
+                      child: TextFormField(
+                        controller: _usuarioController,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          labelText: 'ID de usuario',
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                        ),
+                        validator: (value) =>
+                        value == null || value.isEmpty ? 'Introduce tu ID' : null,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _guardarYEntrar();
+                        }
+                        },
+                      child: const Text('Entrar'),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 16),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _guardarYEntrar();
-                  }
-                },
-                child: const Text('Entrar'),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
