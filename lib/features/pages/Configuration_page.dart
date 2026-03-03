@@ -80,7 +80,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
   @override
   Widget build(BuildContext context) {
     final TextEditingController _endpointController = TextEditingController(
-      text: 'https://pirineosapi.ecomputer.es/Empresa/GetEmpresas'
+      text: 'https://pirineosapi.ecomputer.es/'
     );
 
     return Scaffold(

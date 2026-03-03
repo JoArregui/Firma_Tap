@@ -88,10 +88,7 @@ class _DocumentosPageState extends State<DocumentosPage> {
               return ListTile(
                 title: Text('${doc.tipoDocumento ?? 'Documento'} Nº ${doc.numero}'),
                 subtitle: Text('Total: ${doc.total.toStringAsFixed(2)} €'),
-
-                trailing: Icon(
-                  doc.firmado ? Icons.check_circle : Icons.pending,
-                  color: doc.firmado ? Colors.green : Colors.orange,
+                trailing: Icon(Icons.arrow_circle_right
                 ),
                 onTap: () async {
                   final result = await Navigator.push(
