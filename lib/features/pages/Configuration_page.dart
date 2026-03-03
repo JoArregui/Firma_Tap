@@ -132,6 +132,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
               onChanged: (value) {
                 if (value != null) _guardarEmpresa(value);
               },
+
             ),
             const SizedBox(height: 30),
             Text('Versión de la app: $_version', style: const TextStyle(color: Colors.grey)),
