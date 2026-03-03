@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:app_control_albaranes/features/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -38,19 +39,20 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
 
   Future<void> _cargarEmpresas() async{
     setState(() => _cargandoEmpresas = true);
+
     try{
       final prefs = await SharedPreferences.getInstance();
       final codGuardado = prefs.getString('empresa');
 
       final empresas = await EmpresaService.obtenerEmpresas();
-      EmpresaDTO empresaSeleccionada = empresas.first;
+      EmpresaDTO? empresaSeleccionada;
 
       if(codGuardado != null){
-        final encontrada = empresas.firstWhere(
-            (e) => e.codigo == codGuardado,
-        orElse: () => empresaSeleccionada,
-        );
-        empresaSeleccionada = encontrada;
+        final encontrada = empresas.where(
+            (e) => e.codigo == codGuardado).toList();
+        if(encontrada.isNotEmpty){
+          empresaSeleccionada = encontrada.first;
+        }
       }
 
       setState(() {
@@ -69,11 +71,37 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
   Future<void> _guardarEmpresa(EmpresaDTO empresa) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('empresa', empresa.codigo);
+    final userId = prefs.getInt('usuarioId') ?? 0;
+
     setState(() {
       _empresaSeleccionada = empresa;
     });
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Empresa actualizada')),
+    );
+
+    // Navegar a la HomePage con animación
+    await Future.delayed(const Duration(milliseconds: 300)); // da tiempo a mostrar el snackbar
+
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => HomePage(
+          usuarioId: userId,
+          empresa: empresa.codigo,
+        ),
+        transitionsBuilder: (_, animation, __, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.easeOut;
+
+          final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          final offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(position: offsetAnimation, child: child);
+        },
+      ),
     );
   }
 
@@ -122,7 +150,8 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                 .fadeIn(duration: 400.ms)
                 .scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOut)
                 : DropdownButton<EmpresaDTO>(
-              value: _empresaSeleccionada,
+              value: _empresas.contains(_empresaSeleccionada) ? _empresaSeleccionada : null,
+              hint: const Text('Selecciona una empresa...'),
               items: _empresas.map((e) {
                 return DropdownMenuItem<EmpresaDTO>(
                   value: e,
