@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Services/empresa_service.dart';
 import '../models/empresa_dto.dart';
+import 'login_page.dart';
 
 class ConfigurationPage extends StatefulWidget {
   const ConfigurationPage({super.key});
@@ -105,6 +106,32 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     );
   }
 
+  Future<void> _logout() async {
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Cerrar sesión'),
+        content: const Text('¿Seguro que quieres cerrar sesión?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Cerrar sesión')),
+        ],
+      ),
+    );
+
+    if (confirmar != true) return;
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginPage()),
+          (route) => false,
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final TextEditingController _endpointController = TextEditingController(
@@ -161,10 +188,19 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
               onChanged: (value) {
                 if (value != null) _guardarEmpresa(value);
               },
-
             ),
             const SizedBox(height: 30),
             Text('Versión de la app: $_version', style: const TextStyle(color: Colors.grey)),
+            const SizedBox(height: 30),
+            ElevatedButton.icon(
+              onPressed: _logout,
+              icon: const Icon(Icons.logout),
+              label: const Text('Cerrar Sesion'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                foregroundColor: Colors.white,
+              ),
+            )
           ],
         ),
       ),

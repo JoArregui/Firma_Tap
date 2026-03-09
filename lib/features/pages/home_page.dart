@@ -118,12 +118,12 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Menú principal'),
-        actions: [
+        /*actions: [
           IconButton(
             icon:const Icon(Icons.logout),
             onPressed: _logout,
           )
-        ],
+        ],*/
         centerTitle: true,
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
