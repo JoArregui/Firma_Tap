@@ -120,14 +120,15 @@ class _HomePageState extends State<HomePage> {
     final isTablet = screenWidth >= 600;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Menú principal'),
-        actions: [
+       /* actions: [
           IconButton(
             icon:const Icon(Icons.logout),
             onPressed: SystemNavigator.pop,
           )
-        ],
+        ],*/
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 0, 47, 108),
         foregroundColor: Colors.white,
@@ -154,6 +155,13 @@ class _HomePageState extends State<HomePage> {
                 if (index == 1) _gotoConfig();
                 if (index == 99) SystemNavigator.pop();
                 },
+            ),
+          // 👉 Aquí va la línea vertical
+          if (isTablet)
+            const VerticalDivider(
+              width: 1,
+              thickness: 1,
+              color: Colors.grey,
             ),
           //Aqui ponemos el contenido principal del homePage
           Expanded(
