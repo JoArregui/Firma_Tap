@@ -19,10 +19,15 @@ class ConfigurationPage extends StatefulWidget {
 }
 
 class _ConfigurationPageState extends State<ConfigurationPage> {
+
+  static const String _passEmpresa = "1234";
+
   List<EmpresaDTO> _empresas = [];
   EmpresaDTO? _empresaSeleccionada;
   String _version = '';
   bool _cargandoEmpresas = true;
+
+
 
   @override
   void initState() {
@@ -153,6 +158,37 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     SystemNavigator.pop();
   }
 
+  Future<bool> _pedirPassword() async {
+    final TextEditingController controller = TextEditingController();
+
+    final resultado = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Cambiar empresa"),
+        content: TextField(
+          controller: controller,
+          obscureText: true,
+          decoration: const InputDecoration(
+            labelText: "Introduce la contraseña",
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text("Cancelar"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, controller.text == _passEmpresa);
+            },
+            child: const Text("Aceptar"),
+          ),
+        ],
+      ),
+    );
+
+    return resultado ?? false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -207,9 +243,25 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                   child: Text(e.descripcion),
                 );
               }).toList(),
-              onChanged: (value) {
-                if (value != null) _guardarEmpresa(value);
-              },
+                onChanged: (value) async {
+                  if (value == null) return;
+
+                  // Si no había empresa seleccionada antes, permitir directamente
+                  if (_empresaSeleccionada == null) {
+                    _guardarEmpresa(value);
+                    return;
+                  }
+
+                  // Si ya había empresa, pedir contraseña
+                  final ok = await _pedirPassword();
+                  if (ok) {
+                    _guardarEmpresa(value);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Contraseña incorrecta")),
+                    );
+                  }
+                },
             ),
             const SizedBox(height: 30),
             Text('Versión de la app: $_version', style: const TextStyle(color: Colors.grey)),
