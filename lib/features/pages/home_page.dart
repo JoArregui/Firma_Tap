@@ -2,6 +2,9 @@ import 'package:app_control_albaranes/features/pages/Configuration_page.dart';
 import 'package:app_control_albaranes/features/pages/documentos_page.dart';
 import 'package:app_control_albaranes/features/pages/login_page.dart';
 import 'package:app_control_albaranes/features/pages/select_user_page.dart';
+import 'package:app_control_albaranes/features/pages/widgets/empresa_card.dart';
+import 'package:app_control_albaranes/features/pages/widgets/home_drawer.dart';
+import 'package:app_control_albaranes/features/pages/widgets/home_navigation_rail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -134,76 +137,23 @@ class _HomePageState extends State<HomePage> {
       //Agregamos un drawer lateral solo moviles
       drawer: isTablet
           ? null
-          : Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(color: Colors.indigo),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Icon(Icons.account_circle, size: 60, color: Colors.white),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Usuario: $_usuarioId',
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                  Text(
-                    'Empresa: $_empresa',
-                    style: const TextStyle(color: Colors.white70, fontSize: 14),
-                  ),
-                ],
-              ),
-            ),
-
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Configuracion'),
-              onTap: (){
-                Navigator.pop(context);
-                _gotoConfig();
-                },
-            ),
-            ListTile(
-              leading: const Icon(Icons.close),
-              title: const Text('Cerrar aplicación'),
-              onTap: (){
-                Navigator.pop(context);
-                SystemNavigator.pop();
-                },
-            ),
-          ],
-        ),
+          : HomeDrawer(
+        usuarioId: _usuarioId,
+        descripcionEmpresa: _Descripcion,
+        onConfig: _gotoConfig,
+        onCloseApp: () => SystemNavigator.pop(),
       ),
 
       body: Row(
         children: [
           //NavigationRail SOLO en tablets
-          if(isTablet)
-            NavigationRail(
-              selectedIndex: 0,
-              onDestinationSelected: (index){
+          if (isTablet)
+            HomeNavigationRail(
+              onSelect: (index) {
                 if (index == 0) _goToPendientes();
                 if (index == 1) _gotoConfig();
                 if (index == 2) SystemNavigator.pop();
                 },
-              labelType: NavigationRailLabelType.all,
-              backgroundColor: Colors.indigo.shade50,
-              destinations: const[
-                NavigationRailDestination(
-                  icon: Icon(Icons.description),
-                  label: Text('Pendientes'),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.settings),
-                  label: Text('Configuración'),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.close),
-                  label: Text('Cerrar App'),
-                ),
-              ],
             ),
           //Aqui ponemos el contenido principal del homePage
           Expanded(
@@ -238,12 +188,7 @@ class _HomePageState extends State<HomePage> {
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20,
                       children: [
-                        _buildMenuCard(
-                          icon: Icons.description,
-                          label: 'Firmas Pendientes',
-                          color: Colors.deepPurple,
-                          onTap: _goToPendientes,
-                        ),
+                        EmpresaCard(descripcion: _Descripcion),
                       ],
                     ),
                   ),
@@ -256,7 +201,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildMenuCard({
+  /*Widget _buildMenuCard({
     required IconData icon,
     required String label,
     required Color color,
@@ -284,10 +229,10 @@ class _HomePageState extends State<HomePage> {
         .slideY(begin: 0.2)
         .scale(begin: const Offset(0.95, 0.95), curve: Curves.easeOut),
     );
-  }
+  }*/
 
 
-  Widget _buildMenuButton(
+  /*Widget _buildMenuButton(
       BuildContext context, {
         required String title,
         required Color color,
@@ -320,6 +265,6 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-  }
+  }*/
 
 }
