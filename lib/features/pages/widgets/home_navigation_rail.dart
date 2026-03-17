@@ -15,6 +15,14 @@ class HomeNavigationRail extends StatelessWidget {
       onDestinationSelected: onSelect,
       labelType: NavigationRailLabelType.all,
       backgroundColor: Colors.indigo.shade50,
+
+      groupAlignment: -1,
+        leading: Column(
+          children: const [
+            SizedBox(height: 8),
+          ],
+        ),
+
       destinations: const [
         NavigationRailDestination(
           icon: Icon(Icons.description),
@@ -24,11 +32,18 @@ class HomeNavigationRail extends StatelessWidget {
           icon: Icon(Icons.settings),
           label: Text("Configuración"),
         ),
-        NavigationRailDestination(
-          icon: Icon(Icons.close),
-          label: Text("Cerrar app"),
-        ),
       ],
+
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          IconButton(
+            icon: Icon(Icons.close, color: Colors.red),
+            onPressed: () => onSelect(99),
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
     );
   }
 }

@@ -29,9 +29,9 @@ class HomeCard extends StatelessWidget {
           child:Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 48, color: Colors.white),
+              Icon(icon, size: 48, color: Color.fromARGB(255,0,47,108)),
               const SizedBox(height: 12),
-              Text(label, style: const TextStyle(fontSize: 16, color: Colors.white)),
+              Text(label, style: const TextStyle(fontSize: 16, color: Color.fromARGB(255, 0, 47, 108))),
             ],
           ),
         ),

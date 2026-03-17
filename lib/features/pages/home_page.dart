@@ -123,14 +123,14 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Menú principal'),
-        /*actions: [
+        actions: [
           IconButton(
             icon:const Icon(Icons.logout),
-            onPressed: _logout,
+            onPressed: SystemNavigator.pop,
           )
-        ],*/
+        ],
         centerTitle: true,
-        backgroundColor: Colors.indigo,
+        backgroundColor: Color.fromARGB(255, 0, 47, 108),
         foregroundColor: Colors.white,
         automaticallyImplyActions: !isTablet, //ocualtamos el icono de menu en tablets
       ),
@@ -153,7 +153,7 @@ class _HomePageState extends State<HomePage> {
               onSelect: (index) {
                 if (index == 0) _goToPendientes();
                 if (index == 1) _gotoConfig();
-                if (index == 2) SystemNavigator.pop();
+                if (index == 99) SystemNavigator.pop();
                 },
             ),
           //Aqui ponemos el contenido principal del homePage
@@ -171,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                       child: Row(
                         //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          const Icon(Icons.business_center, size: 48, color: Colors.indigo),
+                          const Icon(Icons.business_center, size: 48, color: Color.fromARGB(255, 0, 47, 108)),
                           const SizedBox(width: 16),
                           Expanded(
                             child: Text( '$_Descripcion', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold , color: Colors.black)),
@@ -185,15 +185,24 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(height: 20),
                   Expanded(
                     child: GridView.count(
-                      crossAxisCount: isTablet ? 3 :2,
+                      //crossAxisCount: isTablet ? 3 :2,
+                      crossAxisCount: 1,
+                      childAspectRatio: 3.5,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20,
                       children: [
                         HomeCard(
                             icon: Icons.description,
                             label: 'Firmas Pendientes',
-                            color: Colors.deepPurple,
+                            color: Colors.grey.shade100,
                             onTap: _goToPendientes),
+                        //HomeCard(icon: Icons.verified_user, label: 'Usuarios', color: Color.fromARGB(255, 0, 47, 108), onTap: (){}),
+                        //_buildMenuCard(icon: Icons.description, label: 'Firmas', color: Color.fromARGB(255, 0, 47, 188), onTap: _goToPendientes)
+                        //HomeCard(icon: Icons.car_rental, label: 'Transporte', color: Color.fromARGB(255, 0, 47, 108), onTap: (){}),
+                        //HomeCard(icon: Icons.business_sharp, label: 'locales', color: Color.fromARGB(255, 0, 47, 108), onTap: (){}),
+                        //HomeCard(icon: Icons.login, label: 'Albaranes', color: Color.fromARGB(255, 0, 47, 108), onTap: (){}),
+                        //HomeCard(icon: Icons.inbox, label: 'Mensajes', color: Color.fromARGB(255, 0, 47, 108), onTap: (){}),
+
                       ],
                     ),
                   ),
@@ -206,7 +215,43 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  /*Widget _buildMenuButton(
+  Widget _buildMenuCard({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: SizedBox(
+        width: double.infinity,
+        height: 200, // ← altura reducida
+        child: Card(
+          elevation: 3,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          color: color,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 40, color: Colors.white),
+              const SizedBox(width: 12),
+              Text(
+                label,
+                style: const TextStyle(fontSize: 18, color: Colors.white),
+              ),
+            ],
+          ),
+        ),
+      )
+          .animate()
+          .fadeIn(duration: 500.ms)
+          .slideY(begin: 0.2)
+          .scale(begin: const Offset(0.95, 0.95), curve: Curves.easeOut),
+    );
+  }
+
+
+/*Widget _buildMenuButton(
       BuildContext context, {
         required String title,
         required Color color,
