@@ -3,6 +3,7 @@ import 'package:app_control_albaranes/features/pages/documentos_page.dart';
 import 'package:app_control_albaranes/features/pages/login_page.dart';
 import 'package:app_control_albaranes/features/pages/select_user_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -128,6 +129,49 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
       ),
+      
+      //Agregamos un drawer lateral
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: const BoxDecoration(color: Colors.indigo),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(Icons.account_circle, size: 60, color: Colors.white),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Usuario: $_usuarioId',
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  Text(
+                    'Empresa: $_empresa',
+                    style: const TextStyle(color: Colors.white70, fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Configuracion'),
+              onTap: (){
+                Navigator.pop(context);
+                _gotoConfig();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.close),
+              title: const Text('Cerrar aplicación'),
+              onTap: (){
+                Navigator.pop(context);
+                SystemNavigator.pop();
+              },
+            ),
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -168,12 +212,6 @@ class _HomePageState extends State<HomePage> {
                     label: 'Firmas Pendientes',
                     color: Colors.deepPurple,
                     onTap: _goToPendientes,
-                  ),
-                  _buildMenuCard(
-                      icon: Icons.settings,
-                      label: 'Configuración',
-                      color: Colors.blueGrey,
-                      onTap: _gotoConfig
                   ),
                 ],
               ),
