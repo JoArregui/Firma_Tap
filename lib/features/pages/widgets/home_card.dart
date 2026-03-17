@@ -1,34 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-class EmpresaCard extends StatelessWidget {
-  final String descripcion;
+enum OptionHome{Pendientes, Albaranes }
+class HomeCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
 
-  const EmpresaCard({
+
+  const HomeCard({
     super.key,
-    required this.descripcion,
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                descripcion,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        color: color,
+        child: Center(
+          child:Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 48, color: Colors.white),
+              const SizedBox(height: 12),
+              Text(label, style: const TextStyle(fontSize: 16, color: Colors.white)),
+            ],
+          ),
         ),
       ),
     )

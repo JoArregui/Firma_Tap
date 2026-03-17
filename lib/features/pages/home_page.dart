@@ -3,6 +3,7 @@ import 'package:app_control_albaranes/features/pages/documentos_page.dart';
 import 'package:app_control_albaranes/features/pages/login_page.dart';
 import 'package:app_control_albaranes/features/pages/select_user_page.dart';
 import 'package:app_control_albaranes/features/pages/widgets/empresa_card.dart';
+import 'package:app_control_albaranes/features/pages/widgets/home_card.dart';
 import 'package:app_control_albaranes/features/pages/widgets/home_drawer.dart';
 import 'package:app_control_albaranes/features/pages/widgets/home_navigation_rail.dart';
 import 'package:flutter/material.dart';
@@ -188,7 +189,11 @@ class _HomePageState extends State<HomePage> {
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20,
                       children: [
-                        EmpresaCard(descripcion: _Descripcion),
+                        HomeCard(
+                            icon: Icons.description,
+                            label: 'Firmas Pendientes',
+                            color: Colors.deepPurple,
+                            onTap: _goToPendientes),
                       ],
                     ),
                   ),
@@ -200,37 +205,6 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-  /*Widget _buildMenuCard({
-    required IconData icon,
-    required String label,
-    required Color color,
-    required VoidCallback onTap,
-}){
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        elevation: 3,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        color: color,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 48, color: Colors.white),
-              const SizedBox(height: 12),
-              Text(label, style: const TextStyle(fontSize: 16, color: Colors.white)),
-            ],
-          ),
-        ),
-      )
-        .animate()
-        .fadeIn(duration: 500.ms)
-        .slideY(begin: 0.2)
-        .scale(begin: const Offset(0.95, 0.95), curve: Curves.easeOut),
-    );
-  }*/
-
 
   /*Widget _buildMenuButton(
       BuildContext context, {
