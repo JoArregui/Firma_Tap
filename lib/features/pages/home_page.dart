@@ -2,7 +2,6 @@ import 'package:app_control_albaranes/features/pages/Configuration_page.dart';
 import 'package:app_control_albaranes/features/pages/documentos_page.dart';
 import 'package:app_control_albaranes/features/pages/login_page.dart';
 import 'package:app_control_albaranes/features/pages/select_user_page.dart';
-import 'package:app_control_albaranes/features/pages/widgets/empresa_card.dart';
 import 'package:app_control_albaranes/features/pages/widgets/home_card.dart';
 import 'package:app_control_albaranes/features/pages/widgets/home_drawer.dart';
 import 'package:app_control_albaranes/features/pages/widgets/home_navigation_rail.dart';
