@@ -199,7 +199,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Configuración'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Color.fromARGB(255,0,47,108),
         foregroundColor: Colors.white,
         centerTitle: true,
       ),
