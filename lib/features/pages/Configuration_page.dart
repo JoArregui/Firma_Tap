@@ -106,6 +106,10 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     );
   }
 
+  /*
+  Comentamos el metodo de cerrar sesion
+  ya que comentan desde dirección que
+  no es necesario
   Future<void> _logout() async {
     final confirmar = await showDialog<bool>(
       context: context,
@@ -129,6 +133,24 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
       MaterialPageRoute(builder: (_) => const LoginPage()),
           (route) => false,
     );
+  }*/
+
+  Future<void> _cerrarApp() async {
+    final confirmar = await showDialog<bool>(
+        context: context, 
+        builder: (_) => AlertDialog(
+          title: const Text('Cerrar Aplicación'),
+          content: const Text('¿Seguro que quieres cerrar la aplicación?'),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
+            TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Cerrar')),
+          ],
+        ),
+    );
+
+    if(confirmar != true) return;
+
+    SystemNavigator.pop();
   }
 
 
@@ -193,9 +215,9 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
             Text('Versión de la app: $_version', style: const TextStyle(color: Colors.grey)),
             const SizedBox(height: 30),
             ElevatedButton.icon(
-              onPressed: _logout,
-              icon: const Icon(Icons.logout),
-              label: const Text('Cerrar Sesion'),
+              onPressed: _cerrarApp,
+              icon: const Icon(Icons.close),
+              label: const Text('Cerrar'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.redAccent,
                 foregroundColor: Colors.white,
