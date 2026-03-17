@@ -3,6 +3,7 @@ import 'package:app_control_albaranes/features/pages/documentos_page.dart';
 import 'package:app_control_albaranes/features/pages/login_page.dart';
 import 'package:app_control_albaranes/features/pages/select_user_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -113,7 +114,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isTablet = screenWidth > 600;
+    final isTablet = screenWidth >= 600;
 
     return Scaffold(
       appBar: AppBar(
@@ -127,59 +128,130 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
+        automaticallyImplyActions: !isTablet, //ocualtamos el icono de menu en tablets
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+      
+      //Agregamos un drawer lateral solo moviles
+      drawer: isTablet
+          ? null
+          : Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
           children: [
-            Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              child: Padding(padding: const EdgeInsets.all(16),
-                child: Row(
-                  //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    const Icon(Icons.business_center, size: 48, color: Colors.indigo),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text( '$_Descripcion', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold , color: Colors.black)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.2),
-            const SizedBox(height: 30),
-            const Text('Opciones disponibles:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 20),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: isTablet ? 3 :2,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
+            DrawerHeader(
+              decoration: const BoxDecoration(color: Colors.indigo),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildMenuCard(
-                    icon: Icons.description,
-                    label: 'Firmas Pendientes',
-                    color: Colors.deepPurple,
-                    onTap: _goToPendientes,
+                  const Icon(Icons.account_circle, size: 60, color: Colors.white),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Usuario: $_usuarioId',
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
                   ),
-                  _buildMenuCard(
-                      icon: Icons.settings,
-                      label: 'Configuración',
-                      color: Colors.blueGrey,
-                      onTap: _gotoConfig
+                  Text(
+                    'Empresa: $_empresa',
+                    style: const TextStyle(color: Colors.white70, fontSize: 14),
                   ),
                 ],
               ),
             ),
+
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Configuracion'),
+              onTap: (){
+                Navigator.pop(context);
+                _gotoConfig();
+                },
+            ),
+            ListTile(
+              leading: const Icon(Icons.close),
+              title: const Text('Cerrar aplicación'),
+              onTap: (){
+                Navigator.pop(context);
+                SystemNavigator.pop();
+                },
+            ),
           ],
         ),
+      ),
+
+      body: Row(
+        children: [
+          //NavigationRail SOLO en tablets
+          if(isTablet)
+            NavigationRail(
+              selectedIndex: 0,
+              onDestinationSelected: (index){
+                if (index == 0) _goToPendientes();
+                if (index == 1) _gotoConfig();
+                if (index == 2) SystemNavigator.pop();
+                },
+              labelType: NavigationRailLabelType.all,
+              backgroundColor: Colors.indigo.shade50,
+              destinations: const[
+                NavigationRailDestination(
+                  icon: Icon(Icons.description),
+                  label: Text('Pendientes'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.settings),
+                  label: Text('Configuración'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.close),
+                  label: Text('Cerrar App'),
+                ),
+              ],
+            ),
+          //Aqui ponemos el contenido principal del homePage
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const Icon(Icons.business_center, size: 48, color: Colors.indigo),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Text( '$_Descripcion', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold , color: Colors.black)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.2),
+                  const SizedBox(height: 30),
+                  const Text('Opciones disponibles:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: GridView.count(
+                      crossAxisCount: isTablet ? 3 :2,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                      children: [
+                        _buildMenuCard(
+                          icon: Icons.description,
+                          label: 'Firmas Pendientes',
+                          color: Colors.deepPurple,
+                          onTap: _goToPendientes,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
