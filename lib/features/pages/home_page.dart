@@ -188,7 +188,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.2),
                   const SizedBox(height: 30),
-                  const Text('Opciones disponibles:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 20),
                   Expanded(
                     child: GridView.count(
