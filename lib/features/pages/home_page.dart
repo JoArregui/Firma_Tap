@@ -123,12 +123,12 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Menú principal'),
-       /* actions: [
+        actions: [
           IconButton(
             icon:const Icon(Icons.logout),
             onPressed: SystemNavigator.pop,
           )
-        ],*/
+        ],
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 0, 47, 108),
         foregroundColor: Colors.white,

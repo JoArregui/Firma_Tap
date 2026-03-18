@@ -265,6 +265,9 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
             ),
             const SizedBox(height: 30),
             Text('Versión de la app: $_version', style: const TextStyle(color: Colors.grey)),
+            /*
+            Quitamos este boton a peticion
+            de jesus
             const SizedBox(height: 30),
             ElevatedButton.icon(
               onPressed: _cerrarApp,
@@ -274,7 +277,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                 backgroundColor: Colors.redAccent,
                 foregroundColor: Colors.white,
               ),
-            )
+            )*/
           ],
         ),
       ),
