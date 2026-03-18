@@ -25,15 +25,7 @@ class HomeDrawer extends StatelessWidget {
             decoration: const BoxDecoration(color: Colors.indigo),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Icon(Icons.account_circle, size: 60, color: Colors.white),
-                const SizedBox(height: 10),
-                Text("Usuario: $usuarioId",
-                    style: const TextStyle(color: Colors.white, fontSize: 16)),
-                Text("Empresa: $descripcionEmpresa",
-                    style: const TextStyle(color: Colors.white70, fontSize: 14)),
-              ],
-            ),
+              ),
           ),
 
           ListTile(
@@ -42,15 +34,6 @@ class HomeDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               onConfig();
-            },
-          ),
-
-          ListTile(
-            leading: const Icon(Icons.close),
-            title: const Text("Cerrar aplicación"),
-            onTap: () {
-              Navigator.pop(context);
-              onCloseApp();
             },
           ),
         ],
