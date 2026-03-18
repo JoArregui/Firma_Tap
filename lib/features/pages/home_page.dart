@@ -101,7 +101,6 @@ class _HomePageState extends State<HomePage> {
           context,
           DocumentosPage(usuarioId: nuevoId, empresa: nuevaEmpresa),
         );
-
       }
     }
   }
@@ -120,9 +119,12 @@ class _HomePageState extends State<HomePage> {
     final isTablet = screenWidth >= 600;
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Menú principal'),
+        leading: IconButton(
+            onPressed: _gotoConfig,
+            icon: const Icon(Icons.settings),
+        ),
         actions: [
           IconButton(
             icon:const Icon(Icons.logout),
@@ -136,14 +138,14 @@ class _HomePageState extends State<HomePage> {
       ),
       
       //Agregamos un drawer lateral solo moviles
-      drawer: isTablet
+      /*drawer: isTablet
           ? null
           : HomeDrawer(
         usuarioId: _usuarioId,
         descripcionEmpresa: _Descripcion,
         onConfig: _gotoConfig,
         onCloseApp: () => SystemNavigator.pop(),
-      ),
+      ),*/
 
       body: Row(
         children: [
