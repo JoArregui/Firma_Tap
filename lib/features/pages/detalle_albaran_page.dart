@@ -1,5 +1,5 @@
+import 'package:app_control_albaranes/core/storage/auth_storage.dart';
 import 'package:app_control_albaranes/core/utils/date_formatter.dart';
-import 'package:app_control_albaranes/features/pages/firmas_page.dart';
 import 'package:flutter/material.dart';
 
 import '../Repositories/albaran_repository.dart';
@@ -21,6 +21,14 @@ class _DetalleAlbaranPageState extends State<DetalleAlbaranPage> {
   @override
   void initState(){
     super.initState();
+    // Carga empresa guardada; fallback EC para compatibilidad iOS/Android
+    AuthStorage.getEmpresa().then((empresa) {
+      final emp = (empresa != null && empresa.isNotEmpty) ? empresa : 'EC';
+      setState(() {
+        futureDocumentos = AlbaranRepository().obtenerDocumento(widget.albaran.id, emp);
+      });
+    });
+    // provisional hasta que future se resuelva
     futureDocumentos = AlbaranRepository().obtenerDocumento(widget.albaran.id, 'EC');
   }
 

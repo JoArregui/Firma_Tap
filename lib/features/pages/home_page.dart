@@ -1,14 +1,16 @@
+import 'package:app_control_albaranes/core/storage/auth_storage.dart';
 import 'package:app_control_albaranes/features/pages/Configuration_page.dart';
+import 'package:app_control_albaranes/features/pages/analytics_page.dart';
 import 'package:app_control_albaranes/features/pages/documentos_page.dart';
+import 'package:app_control_albaranes/features/pages/historial_page.dart';
 import 'package:app_control_albaranes/features/pages/login_page.dart';
+import 'package:app_control_albaranes/features/pages/roles_page.dart';
 import 'package:app_control_albaranes/features/pages/select_user_page.dart';
 import 'package:app_control_albaranes/features/pages/widgets/home_card.dart';
-import 'package:app_control_albaranes/features/pages/widgets/home_drawer.dart';
 import 'package:app_control_albaranes/features/pages/widgets/home_navigation_rail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/utils/animated_routes.dart';
 import '../Services/empresa_service.dart';
@@ -42,10 +44,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _cargarDatos() async {
-    final prefs = await SharedPreferences.getInstance();
-    final nuevoId = prefs.getInt('usuarioId');
-    final nuevaEmpresa = prefs.getString('empresa');
+    final nuevoId = await AuthStorage.getUsuarioId();
+    final nuevaEmpresa = await AuthStorage.getEmpresa();
 
+    if (!mounted) return;
     setState(() {
       if (nuevoId != null) _usuarioId = nuevoId;
       if(nuevaEmpresa != null) _empresa = nuevaEmpresa;
@@ -53,8 +55,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _cargarDescripcionEmpresa() async {
-    final prefs = await SharedPreferences.getInstance();
-    final codigo = prefs.getString('empresa');
+    final codigo = await AuthStorage.getEmpresa();
 
     if (codigo != null) {
       try {
@@ -75,8 +76,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _logout() async{
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    await AuthStorage.clear();
+    if (!mounted) return;
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const LoginPage()),
@@ -92,9 +93,7 @@ class _HomePageState extends State<HomePage> {
     if (resultado != null) {
       final nuevoId = resultado['usuarioId'] as int;
       final nuevaEmpresa = resultado['empresa'] as String;
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setInt('usuarioId', nuevoId);
-      await prefs.setString('empresa', nuevaEmpresa);
+      await AuthStorage.saveSession(usuarioId: nuevoId, empresa: nuevaEmpresa);
 
       if (context.mounted) {
         navegarAnimado(
@@ -191,26 +190,19 @@ class _HomePageState extends State<HomePage> {
                   ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.2),
                   const SizedBox(height: 30),
                   const SizedBox(height: 20),
-                  Expanded(
+                    Expanded(
                     child: GridView.count(
-                      //crossAxisCount: isTablet ? 3 :2,
-                      crossAxisCount: 1,
-                      childAspectRatio: 3.5,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20,
+                      crossAxisCount: isTablet ? 2 : 1,
+                      childAspectRatio: isTablet ? 3.2 : 3.5,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
                       children: [
-                        HomeCard(
-                            icon: Icons.description,
-                            label: 'Firmas Pendientes',
-                            color: Colors.grey.shade100,
-                            onTap: _goToPendientes),
-                        //HomeCard(icon: Icons.verified_user, label: 'Usuarios', color: Color.fromARGB(255, 0, 47, 108), onTap: (){}),
-                        //_buildMenuCard(icon: Icons.description, label: 'Firmas', color: Color.fromARGB(255, 0, 47, 188), onTap: _goToPendientes)
-                        //HomeCard(icon: Icons.car_rental, label: 'Transporte', color: Color.fromARGB(255, 0, 47, 108), onTap: (){}),
-                        //HomeCard(icon: Icons.business_sharp, label: 'locales', color: Color.fromARGB(255, 0, 47, 108), onTap: (){}),
-                        //HomeCard(icon: Icons.login, label: 'Albaranes', color: Color.fromARGB(255, 0, 47, 108), onTap: (){}),
-                        //HomeCard(icon: Icons.inbox, label: 'Mensajes', color: Color.fromARGB(255, 0, 47, 108), onTap: (){}),
-
+                        HomeCard(icon: Icons.description, label: 'Firmas Pendientes', color: Colors.grey.shade100, onTap: _goToPendientes),
+                        HomeCard(icon: Icons.picture_as_pdf, label: 'Vista PDF', color: Colors.blue.shade50, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => DocumentosPage(usuarioId: _usuarioId, empresa: _empresa)))),
+                        HomeCard(icon: Icons.history, label: 'Historial', color: Colors.orange.shade50, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HistorialPage()))),
+                        HomeCard(icon: Icons.analytics, label: 'Analítica', color: Colors.green.shade50, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AnalyticsPage()))),
+                        HomeCard(icon: Icons.group, label: 'Roles', color: Colors.purple.shade50, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const RolesPage()))),
+                        HomeCard(icon: Icons.share, label: 'Compartir', color: Colors.teal.shade50, onTap: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Usa el botón compartir en PDF/Historial')))),
                       ],
                     ),
                   ),

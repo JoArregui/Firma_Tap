@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:app_control_albaranes/features/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Services/empresa_service.dart';
 import '../models/empresa_dto.dart';
-import 'login_page.dart';
 
 class ConfigurationPage extends StatefulWidget {
   const ConfigurationPage({super.key});
@@ -26,14 +23,20 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
   EmpresaDTO? _empresaSeleccionada;
   String _version = '';
   bool _cargandoEmpresas = true;
-
-
+  late final TextEditingController _endpointController;
 
   @override
   void initState() {
     super.initState();
+    _endpointController = TextEditingController(text: 'https://pirineosapi.ecomputer.es/');
     _cargarEmpresas();
     _cargarVersion();
+  }
+
+  @override
+  void dispose() {
+    _endpointController.dispose();
+    super.dispose();
   }
 
   Future<void> _cargarVersion() async{
@@ -192,10 +195,6 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _endpointController = TextEditingController(
-      text: 'https://pirineosapi.ecomputer.es/'
-    );
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Configuración'),

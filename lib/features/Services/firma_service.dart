@@ -38,17 +38,14 @@ class FirmaService {
       ..fields['Numero'] = Numero.toString()
       ..fields['Usuario'] = Usuario
       ..files.add(http.MultipartFile.fromBytes(
-        '',
+        'firma',
         jpgBytes,
         filename: '$Numero.jpg',
         contentType: MediaType('image', 'jpeg'),
       ));
 
-    // Añadir encabezados explícitos
-    request.headers.addAll({
-      'Accept': 'application/json',
-      'Content-Type': 'multipart/form-data',
-    });
+    // No fijar Content-Type manualmente: http generará boundary correctamente
+    request.headers['Accept'] = 'application/json';
 
     try {
       final stopwatch = Stopwatch()..start();
@@ -62,7 +59,7 @@ class FirmaService {
       );
 
       stopwatch.stop();
-      print('⏱️ Tiempo de respuesta del servidor: ${stopwatch.elapsed.inSeconds} segundos');
+      debugPrint('⏱️ Tiempo de respuesta del servidor: ${stopwatch.elapsed.inSeconds} segundos');
 
 
       final responseBody = await streamedResponse.stream.bytesToString();
