@@ -1,0 +1,13 @@
+{
+  "@@locale": "en",
+  "login": "Log in",
+  "logout": "Log out",
+  "sign": "Sign",
+  "history": "History",
+  "documents": "Documents",
+  "settings": "Settings",
+  "search": "Search",
+  "pending": "Pending",
+  "signatureSuccess": "Signature saved successfully",
+  "errorGeneric": "An error has occurred"
+}

@@ -26,16 +26,16 @@ class AlbaranService
   }
 
   Future<void> enviarFirma(int albaranId, FirmaDto firma) async{
-    final url = Uri.parse('$_baseUrl/albaranes/ãlbaranId/firmar');
+    final url = Uri.parse('$_baseUrl/albaranes/$albaranId/firmar');
     final response = await http.post(
       url,
-      headers: {'Content-type': 'application/json'},
+      headers: {'Content-Type': 'application/json'},
       body: jsonEncode(firma.toJson()),
-    );
+    ).timeout(const Duration(seconds: 20));
 
     if(response.statusCode != 200)
     {
-      throw Exception('Error al firmar el albarán');
+      throw Exception('Error al firmar el albarán: ${response.statusCode}');
     }
   }
 

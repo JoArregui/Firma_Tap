@@ -25,30 +25,27 @@ class FirmaService {
   /// Envía la firma en formato JPG al servidor
   static Future<void> enviarFirma({
     required Uint8List jpgBytes,
-    required String CodigoEmpresa,
-    required String TipoDocumento,
-    required int Numero,
-    required String Usuario,
-  }) async {
+required String codigoEmpresa,
+    required String tipoDocumento,
+    required int numero,
+    required String usuario,
+}) async {
     final url = Uri.parse('https://pirineosapi.ecomputer.es/DocumentoAFirmar/SubirFirma');
 
     final request = http.MultipartRequest('POST', url)
-      ..fields['CodigoEmpresa'] = CodigoEmpresa
-      ..fields['TipoDocumento'] = TipoDocumento
-      ..fields['Numero'] = Numero.toString()
-      ..fields['Usuario'] = Usuario
+      ..fields['codigoEmpresa'] = codigoEmpresa
+      ..fields['tipoDocumento'] = tipoDocumento
+      ..fields['numero'] = numero.toString()
+      ..fields['usuario'] = usuario
       ..files.add(http.MultipartFile.fromBytes(
-        '',
+        'firma',
         jpgBytes,
-        filename: '$Numero.jpg',
+        filename: '$numero.jpg',
         contentType: MediaType('image', 'jpeg'),
       ));
 
-    // Añadir encabezados explícitos
-    request.headers.addAll({
-      'Accept': 'application/json',
-      'Content-Type': 'multipart/form-data',
-    });
+    // No fijar Content-Type manualmente: http generará boundary correctamente
+    request.headers['Accept'] = 'application/json';
 
     try {
       final stopwatch = Stopwatch()..start();
@@ -62,7 +59,7 @@ class FirmaService {
       );
 
       stopwatch.stop();
-      print('⏱️ Tiempo de respuesta del servidor: ${stopwatch.elapsed.inSeconds} segundos');
+      debugPrint('⏱️ Tiempo de respuesta del servidor: ${stopwatch.elapsed.inSeconds} segundos');
 
 
       final responseBody = await streamedResponse.stream.bytesToString();

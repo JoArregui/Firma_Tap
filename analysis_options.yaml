@@ -1,1 +1,16 @@
 include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    - avoid_print: false # se usará logger en prod, print permitido en debug
+    - require_trailing_commas
+    - prefer_const_constructors
+    - prefer_const_literals_to_create_immutables
+    - avoid_empty_else
+    - avoid_relative_lib_imports
+    - use_key_in_widget_constructors
+    - prefer_single_quotes
+
+analyzer:
+  errors:
+    invalid_annotation_target: ignore

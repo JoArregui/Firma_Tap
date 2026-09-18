@@ -1,0 +1,43 @@
+{
+  "@@locale": "es",
+  "login": "Iniciar sesión",
+  "@login": {
+    "description": "Botón y título de login"
+  },
+  "logout": "Cerrar sesión",
+  "@logout": {
+    "description": "Cerrar sesión del usuario"
+  },
+  "sign": "Firmar",
+  "@sign": {
+    "description": "Acción de firmar documento/albarán"
+  },
+  "history": "Historial",
+  "@history": {
+    "description": "Historial de firmas y albaranes"
+  },
+  "documents": "Documentos",
+  "@documents": {
+    "description": "Listado de documentos"
+  },
+  "settings": "Ajustes",
+  "@settings": {
+    "description": "Pantalla de configuración"
+  },
+  "search": "Buscar",
+  "@search": {
+    "description": "Acción de buscar"
+  },
+  "pending": "Pendientes",
+  "@pending": {
+    "description": "Albaranes pendientes"
+  },
+  "signatureSuccess": "Firma guardada correctamente",
+  "@signatureSuccess": {
+    "description": "Mensaje tras firmar con éxito"
+  },
+  "errorGeneric": "Ha ocurrido un error",
+  "@errorGeneric": {
+    "description": "Mensaje de error genérico"
+  }
+}

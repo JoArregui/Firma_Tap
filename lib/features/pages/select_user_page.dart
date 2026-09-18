@@ -1,4 +1,3 @@
-import 'package:app_control_albaranes/features/pages/documentos_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,28 +36,39 @@ class _SelectUserPageState extends State<SelectUserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Validar Usuario')),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('Introduce el ID de usuario:', style: TextStyle(fontSize: 18)),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _controller,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'ID de usuario',
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(24, 24, 24, 24 + MediaQuery.of(context).viewInsets.bottom),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 420),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Introduce el ID de usuario:', style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _controller,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'ID de usuario',
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: _confirmar,
+                      icon: const Icon(Icons.check),
+                      label: const Text('Confirmar'),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: _confirmar,
-              icon: const Icon(Icons.check),
-              label: const Text('Confirmar'),
-            ),
-          ],
+          ),
         ),
       ),
     );

@@ -57,13 +57,13 @@ class _FirmasPageState extends State<FirmasPage> {
           controller: _controller,
       );
       
-     await FirmaService.enviarFirma(
-         jpgBytes: jpgByte,
-         CodigoEmpresa: widget.doc.codigoEmpresa ?? 'Desconocido',
-         TipoDocumento: widget.doc.tipoDocumento ?? 'Desconocido',
-         Numero: widget.doc.numero,
-         Usuario: widget.doc.usuario.toString()
-     );
+await FirmaService.enviarFirma(
+          jpgBytes: jpgByte,
+          codigoEmpresa: widget.doc.codigoEmpresa ?? 'Desconocido',
+          tipoDocumento: widget.doc.tipoDocumento ?? 'Desconocido',
+          numero: widget.doc.numero,
+          usuario: widget.doc.usuario.toString(),
+        );
       
       Navigator.of(context, rootNavigator: true).pop(); //Cierra el dialogo
       
@@ -101,32 +101,39 @@ class _FirmasPageState extends State<FirmasPage> {
       appBar: AppBar(
         title: Text('Firma ${doc.tipoDocumento} Nº ${doc.numero}'),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Container(
-              key: _signatureKey,
-              color: Colors.grey[200],
-              child: Signature(controller: _controller),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: Container(
+                key: _signatureKey,
+                color: Colors.grey[200],
+                child: Signature(controller: _controller),
+              ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              TextButton.icon(
-                onPressed: _controller.clear,
-                icon: const Icon(Icons.clear),
-                label: const Text('Borrar'),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 16,
+                runSpacing: 8,
+                children: [
+                  TextButton.icon(
+                    onPressed: _controller.clear,
+                    icon: const Icon(Icons.clear),
+                    label: const Text('Borrar'),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: _isSaving ? null : _guardarFirma,
+                    icon: const Icon(Icons.check),
+                    label: const Text('Guardar firma'),
+                  ),
+                ],
               ),
-              ElevatedButton.icon(
-                onPressed: _isSaving ? null : _guardarFirma,
-                icon: const Icon(Icons.check),
-                label: const Text('Guardar firma'),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-        ],
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
