@@ -1,0 +1,13 @@
+{
+  "@@locale": "ca",
+  "login": "Iniciar sessió",
+  "logout": "Tancar sessió",
+  "sign": "Signar",
+  "history": "Historial",
+  "documents": "Documents",
+  "settings": "Ajustaments",
+  "search": "Cercar",
+  "pending": "Pendents",
+  "signatureSuccess": "Signatura desada correctament",
+  "errorGeneric": "S''ha produït un error"
+}

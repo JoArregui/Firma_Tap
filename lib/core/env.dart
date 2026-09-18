@@ -6,6 +6,7 @@ class Env {
   static const String documentoBaseUrl = String.fromEnvironment('DOCUMENTO_BASE_URL', defaultValue: 'https://pirineosapi.ecomputer.es/DocumentoAFirmar');
 
   static const String empresaUrl = String.fromEnvironment('EMPRESA_URL', defaultValue: 'https://pirineosapi.ecomputer.es/Empresa/GetEmpresas');
+  static const String webhookUrl = String.fromEnvironment('WEBHOOK_URL', defaultValue: '');
 
   static bool get isProd => const bool.fromEnvironment('PROD', defaultValue: true);
 }

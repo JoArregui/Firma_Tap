@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
+import 'package:http_parser/http_parser.dart' show MediaType; 
 import 'package:workmanager/workmanager.dart';
 
 import '../../features/Services/firma_service.dart';
@@ -448,10 +447,10 @@ class QueueService {
           } else {
             await FirmaService.enviarFirma(
               jpgBytes: jpgBytes,
-              CodigoEmpresa: firma.codigoEmpresa,
-              TipoDocumento: firma.tipoDocumento,
-              Numero: firma.numero,
-              Usuario: firma.usuario,
+              codigoEmpresa: firma.codigoEmpresa,
+              tipoDocumento: firma.tipoDocumento,
+              numero: firma.numero,
+              usuario: firma.usuario,
             );
           }
 
@@ -498,10 +497,10 @@ class QueueService {
           } else {
             await FirmaService.enviarFirma(
               jpgBytes: jpgBytes,
-              CodigoEmpresa: firma.codigoEmpresa,
-              TipoDocumento: firma.tipoDocumento,
-              Numero: firma.numero,
-              Usuario: firma.usuario,
+              codigoEmpresa: firma.codigoEmpresa,
+              tipoDocumento: firma.tipoDocumento,
+              numero: firma.numero,
+              usuario: firma.usuario,
             );
           }
           await box.deleteAt(i);

@@ -54,7 +54,7 @@ class _LoteFirmaPageState extends State<LoteFirmaPage> {
         _lat = 0; _lng = 0;
       }
       try {
-        await FirmaService.enviarFirma(jpgBytes: jpg, CodigoEmpresa: doc.codigoEmpresa ?? widget.empresa, TipoDocumento: doc.tipoDocumento ?? 'ALB', Numero: doc.numero, Usuario: doc.usuario.toString());
+        await FirmaService.enviarFirma(jpgBytes: jpg, codigoEmpresa: doc.codigoEmpresa ?? widget.empresa, tipoDocumento: doc.tipoDocumento ?? 'ALB', numero: doc.numero, usuario: doc.usuario.toString());
         await HistoryService.addWithBytes(numero: doc.numero, tipoDocumento: doc.tipoDocumento ?? '-', empresa: doc.codigoEmpresa ?? widget.empresa, usuario: doc.usuario.toString(), jpgBytes: jpg, lat: _lat, lng: _lng);
         if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('✅ ${doc.numero} firmado')));
       } catch (e) {
@@ -108,19 +108,22 @@ class _LoteFirmaPageState extends State<LoteFirmaPage> {
                       padding: const EdgeInsets.all(12),
                       child: Column(
                         children: [
-                          Text('${d.tipoDocumento} Nº ${d.numero}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                          Text('Total ${d.total.toStringAsFixed(2)} €'),
-                          if (_fotoPath != null) Padding(padding: const EdgeInsets.only(top: 8), child: Text('📸 Foto: ${_fotoPath!.split('/').last}', style: const TextStyle(color: Colors.green, fontSize: 12))),
+                          FittedBox(fit: BoxFit.scaleDown, child: Text('${d.tipoDocumento} Nº ${d.numero}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
+                          Text('Total ${d.total.toStringAsFixed(2)} €', overflow: TextOverflow.ellipsis),
+                          if (_fotoPath != null) Padding(padding: const EdgeInsets.only(top: 8), child: Text('📸 Foto: ${_fotoPath!.split('/').last}', style: const TextStyle(color: Colors.green, fontSize: 12), overflow: TextOverflow.ellipsis, maxLines: 1)),
                           const SizedBox(height: 12),
                           Expanded(child: Container(decoration: BoxDecoration(border: Border.all(), borderRadius: BorderRadius.circular(8), color: Colors.grey[200]), child: Signature(controller: _ctrl, backgroundColor: Colors.white))),
                           const SizedBox(height: 8),
-                          Row(
+                          // Wrap evita bottom overflowed by pixels en pantallas estrechas
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            alignment: WrapAlignment.center,
+                            crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
                               OutlinedButton.icon(onPressed: _ctrl.clear, icon: const Icon(Icons.clear), label: const Text('Borrar')),
-                              const SizedBox(width: 8),
                               OutlinedButton.icon(onPressed: _pickFoto, icon: const Icon(Icons.camera_alt), label: const Text('Foto')),
-                              const Spacer(),
-                              ElevatedButton.icon(onPressed: _saving ? null : _firmarActual, icon: _saving ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : const Icon(Icons.check), label: Text(i == total - 1 ? 'Firmar y cerrar' : 'Firmar y siguiente')),
+                              ElevatedButton.icon(onPressed: _saving ? null : _firmarActual, icon: _saving ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : const Icon(Icons.check), label: Text(i == total - 1 ? 'Firmar y cerrar' : 'Firmar y siguiente', overflow: TextOverflow.ellipsis)),
                             ],
                           ),
                         ],

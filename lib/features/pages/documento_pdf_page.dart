@@ -207,7 +207,7 @@ class _DocumentoPdfPageState extends State<DocumentoPdfPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(title, overflow: TextOverflow.ellipsis),
         actions: [
           IconButton(
             icon: const Icon(Icons.share),
@@ -216,13 +216,17 @@ class _DocumentoPdfPageState extends State<DocumentoPdfPage> {
           ),
           Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: ElevatedButton.icon(
-              onPressed: _isLoading ? null : _onFirmar,
-              icon: const Icon(Icons.draw, size: 18),
-              label: const Text('Firmar'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Colors.white,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: ElevatedButton.icon(
+                onPressed: _isLoading ? null : _onFirmar,
+                icon: const Icon(Icons.draw, size: 18),
+                label: const Text('Firmar'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
+                  visualDensity: VisualDensity.compact,
+                ),
               ),
             ),
           ),

@@ -1,3 +1,4 @@
+import 'package:app_control_albaranes/core/auth/biometric_service.dart';
 import 'package:app_control_albaranes/core/storage/auth_storage.dart';
 import 'package:app_control_albaranes/features/pages/Configuration_page.dart';
 import 'package:app_control_albaranes/features/pages/analytics_page.dart';
@@ -11,6 +12,7 @@ import 'package:app_control_albaranes/features/pages/widgets/home_navigation_rai
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/utils/animated_routes.dart';
 import '../Services/empresa_service.dart';
@@ -32,7 +34,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late int _usuarioId;
   late String _empresa;
-  String _Descripcion = '';
+  String _descripcion = '';
 
   @override
   void initState(){
@@ -64,25 +66,19 @@ class _HomePageState extends State<HomePage> {
               (e) => e.codigo == codigo,
           orElse: () => EmpresaDTO(codigo: codigo, descripcion: codigo),
         );
-        setState(() {
-          _Descripcion = empresa.descripcion;
-        });
+        if (mounted) {
+          setState(() {
+            _descripcion = empresa.descripcion;
+          });
+        }
       } catch (e) {
-        setState(() {
-          _Descripcion = codigo; // fallback si falla
-        });
+        if (mounted) {
+          setState(() {
+            _descripcion = codigo; // fallback si falla
+          });
+        }
       }
     }
-  }
-
-  Future<void> _logout() async{
-    await AuthStorage.clear();
-    if (!mounted) return;
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => const LoginPage()),
-            (route) => false,
-    );
   }
 
   Future<void> _goToPendientes() async{
@@ -95,7 +91,7 @@ class _HomePageState extends State<HomePage> {
       final nuevaEmpresa = resultado['empresa'] as String;
       await AuthStorage.saveSession(usuarioId: nuevoId, empresa: nuevaEmpresa);
 
-      if (context.mounted) {
+      if (mounted) {
         navegarAnimado(
           context,
           DocumentosPage(usuarioId: nuevoId, empresa: nuevaEmpresa),
@@ -106,10 +102,63 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _gotoConfig() async {
     await navegarAnimado(context, const ConfigurationPage());
-    if (context.mounted) {
+    if (mounted) {
       _cargarDatos();
       _cargarDescripcionEmpresa();
     }
+  }
+
+  Future<void> _cerrarSesion() async {
+    bool borrarBiometria = false;
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setStateDialog) => AlertDialog(
+          title: const Text('Cerrar sesión'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('¿Seguro que quieres salir?'),
+              const SizedBox(height: 12),
+              CheckboxListTile(
+                value: borrarBiometria,
+                onChanged: (v) => setStateDialog(() => borrarBiometria = v ?? false),
+                title: const Text('Borrar también huella / Face ID', style: TextStyle(fontSize: 14)),
+                subtitle: const Text('Si lo dejas sin marcar, la próxima vez podrás entrar con biometría sin reactivarla', style: TextStyle(fontSize: 12)),
+                contentPadding: EdgeInsets.zero,
+                controlAffinity: ListTileControlAffinity.leading,
+                dense: true,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+            FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Cerrar sesión')),
+          ],
+        ),
+      ),
+    );
+    if (confirmar != true) return;
+    try {
+      await AuthStorage.clear();
+      if (borrarBiometria) {
+        try { await BiometricService().clear(); } catch (_) {}
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove('biometria_ofrecida');
+        await prefs.remove('biometria_habilitada');
+      }
+      // Si no se borra biometría, se mantiene secure_storage (usuarioId/empresa) y flags
+      // para que "Entrar con huella" siga funcionando tras relogin
+    } catch (e) {
+      debugPrint('[HomePage] error _cerrarSesion clear: $e');
+    }
+    if (!mounted) return;
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginPage()),
+      (_) => false,
+    );
   }
 
   @override
@@ -126,12 +175,13 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           IconButton(
-            icon:const Icon(Icons.logout),
-            onPressed: SystemNavigator.pop,
-          )
+            tooltip: 'Cerrar sesión',
+            icon: const Icon(Icons.logout),
+            onPressed: _cerrarSesion,
+          ),
         ],
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 0, 47, 108),
+        backgroundColor: const Color.fromARGB(255, 0, 47, 108),
         foregroundColor: Colors.white,
         automaticallyImplyActions: !isTablet, //ocualtamos el icono de menu en tablets
       ),
@@ -141,7 +191,7 @@ class _HomePageState extends State<HomePage> {
           ? null
           : HomeDrawer(
         usuarioId: _usuarioId,
-        descripcionEmpresa: _Descripcion,
+        descripcionEmpresa: _descripcion,
         onConfig: _gotoConfig,
         onCloseApp: () => SystemNavigator.pop(),
       ),*/
@@ -154,7 +204,7 @@ class _HomePageState extends State<HomePage> {
               onSelect: (index) {
                 if (index == 0) _goToPendientes();
                 if (index == 1) _gotoConfig();
-                if (index == 99) SystemNavigator.pop();
+                if (index == 99) _cerrarSesion();
                 },
             ),
           // 👉 Aquí va la línea vertical
@@ -182,20 +232,20 @@ class _HomePageState extends State<HomePage> {
                           const Icon(Icons.business_center, size: 48, color: Color.fromARGB(255, 0, 47, 108)),
                           const SizedBox(width: 16),
                           Expanded(
-                            child: Text( '$_Descripcion', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold , color: Colors.black)),
+                            child: Text( _descripcion, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold , color: Colors.black)),
                           ),
                         ],
                       ),
                     ),
                   ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.2),
-                  const SizedBox(height: 30),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                     Expanded(
                     child: GridView.count(
                       crossAxisCount: isTablet ? 2 : 1,
-                      childAspectRatio: isTablet ? 3.2 : 3.5,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
+                      // 1.9px overflow fix: ratio anterior 3.5/3.2 daba celdas ~89px, insuficiente para icono 36+texto. 2.6 da ~120px.
+                      childAspectRatio: isTablet ? 2.8 : 2.6,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
                       children: [
                         HomeCard(icon: Icons.description, label: 'Firmas Pendientes', color: Colors.grey.shade100, onTap: _goToPendientes),
                         HomeCard(icon: Icons.picture_as_pdf, label: 'Vista PDF', color: Colors.blue.shade50, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => DocumentosPage(usuarioId: _usuarioId, empresa: _empresa)))),
@@ -214,42 +264,6 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-  Widget _buildMenuCard({
-    required IconData icon,
-    required String label,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: double.infinity,
-        height: 200, // ← altura reducida
-        child: Card(
-          elevation: 3,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          color: color,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 40, color: Colors.white),
-              const SizedBox(width: 12),
-              Text(
-                label,
-                style: const TextStyle(fontSize: 18, color: Colors.white),
-              ),
-            ],
-          ),
-        ),
-      )
-          .animate()
-          .fadeIn(duration: 500.ms)
-          .slideY(begin: 0.2)
-          .scale(begin: const Offset(0.95, 0.95), curve: Curves.easeOut),
-    );
-  }
-
 
 /*Widget _buildMenuButton(
       BuildContext context, {

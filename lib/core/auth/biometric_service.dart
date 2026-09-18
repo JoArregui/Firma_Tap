@@ -57,26 +57,60 @@ class BiometricService {
     }
   }
 
+  /// Lista de biométricos enrolados (huella, facial, etc.). Vacía = no enrolado.
+  Future<List<BiometricType>> getAvailableBiometrics() async {
+    try {
+      final list = await _auth.getAvailableBiometrics();
+      debugPrint('[BiometricService] getAvailableBiometrics: $list');
+      return list;
+    } on PlatformException catch (e) {
+      debugPrint('[BiometricService] getAvailableBiometrics PlatformException: $e');
+      return [];
+    }
+  }
+
+  /// Etiqueta humana según lo enrolado: huella, Face ID, o genérico biometría.
+  /// "huella" es un tipo de biometría, no una opción separada.
+  Future<String> getBiometryLabel() async {
+    final list = await getAvailableBiometrics();
+    final hasFingerprint = list.any((t) => t == BiometricType.fingerprint || t == BiometricType.strong || t == BiometricType.weak);
+    final hasFace = list.any((t) => t == BiometricType.face);
+    if (hasFingerprint && hasFace) return 'huella / Face ID';
+    if (hasFingerprint) return 'huella';
+    if (hasFace) return 'Face ID';
+    if (list.isNotEmpty) return 'biometría';
+    // Fallback si no se pudo enumerar pero isBiometricAvailable==true
+    return 'huella / Face ID';
+  }
+
   /// Autentica al usuario.
   ///
   /// Usa `localizedReason: 'Autentícate para acceder'` y `biometricOnly: false`
   /// para permitir fallback a PIN/patrón del sistema.
   /// Maneja `PlatformException`. El llamante debe verificar `mounted` tras el `await`.
   Future<bool> authenticate() async {
+    final r = await authenticateDetailed();
+    return r.$1;
+  }
+
+  /// Variante con detalle de error: (ok, code, message)
+  Future<(bool, String?, String?)> authenticateDetailed() async {
     try {
-      return await _auth.authenticate(
+      final ok = await _auth.authenticate(
         localizedReason: 'Autentícate para acceder',
         options: const AuthenticationOptions(
           biometricOnly: false,
           stickyAuth: true,
         ),
       );
+      debugPrint('[BiometricService] authenticateDetailed ok=$ok');
+      return (ok, null, null);
     } on PlatformException catch (e) {
-      debugPrint('[BiometricService] authenticate PlatformException: $e');
-      return false;
+      debugPrint('[BiometricService] authenticateDetailed PlatformException: code=${e.code} msg=${e.message} details=${e.details}');
+      return (false, e.code, e.message);
     } catch (e) {
-      debugPrint('[BiometricService] authenticate error: $e');
-      return false;
+      debugPrint('[BiometricService] authenticateDetailed error: $e');
+      return (false, 'Unknown', e.toString());
     }
   }
 

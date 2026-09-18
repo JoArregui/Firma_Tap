@@ -25,14 +25,29 @@ class HomeCard extends StatelessWidget {
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         color: color,
-        child: Center(
-          child:Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 48, color: Color.fromARGB(255,0,47,108)),
-              const SizedBox(height: 12),
-              Text(label, style: const TextStyle(fontSize: 16, color: Color.fromARGB(255, 0, 47, 108))),
-            ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 36, color: const Color.fromARGB(255,0,47,108)),
+                const SizedBox(height: 8),
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      label,
+                      style: const TextStyle(fontSize: 15, color: Color.fromARGB(255, 0, 47, 108), fontWeight: FontWeight.w600),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

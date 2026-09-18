@@ -1,4 +1,3 @@
-
 import 'package:app_control_albaranes/core/media/foto_geo_service.dart';
 import 'package:app_control_albaranes/core/offline/queue_service.dart';
 import 'package:app_control_albaranes/core/storage/history_service.dart';
@@ -90,13 +89,13 @@ class _FirmaDocumentoPageState extends State<FirmaDocumentoPage> {
         try { final pos = await _fotoGeo.getCurrentLocation(); _lat = pos.latitude; _lng = pos.longitude; } catch (_) {}
         // Enviar firma al servidor
         try {
-          await FirmaService.enviarFirma(
-              jpgBytes: jpgBytes,
-              CodigoEmpresa: widget.documento.codigoEmpresa ?? 'Desconocido' ,
-              TipoDocumento: widget.documento.tipoDocumento ?? 'Desconocido',
-              Numero: widget.documento.numero,
-              Usuario: widget.documento.usuario.toString(),
-          );
+await FirmaService.enviarFirma(
+          jpgBytes: jpgBytes,
+          codigoEmpresa: widget.documento.codigoEmpresa ?? 'Desconocido' ,
+          tipoDocumento: widget.documento.tipoDocumento ?? 'Desconocido',
+          numero: widget.documento.numero,
+          usuario: widget.documento.usuario.toString(),
+        );
           // Historial local
           try { await HistoryService.addWithBytes(numero: widget.documento.numero, tipoDocumento: widget.documento.tipoDocumento ?? '-', empresa: widget.documento.codigoEmpresa ?? 'Desconocido', usuario: widget.documento.usuario.toString(), jpgBytes: jpgBytes, lat: _lat, lng: _lng); } catch (_) {}
           if(mounted){
@@ -116,21 +115,25 @@ class _FirmaDocumentoPageState extends State<FirmaDocumentoPage> {
           return;
         }
       }catch(e){
-        if(Navigator.of(context, rootNavigator: true).canPop()){
-          Navigator.of(context, rootNavigator: true).pop();
+        if (mounted) {
+          if(Navigator.of(context, rootNavigator: true).canPop()){
+            Navigator.of(context, rootNavigator: true).pop();
+          }
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(
+                  'Error al guardar la firma: \n$e',
+                  maxLines: 5,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              duration: const Duration(seconds: 6),
+            ),
+          );
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(
-                'Error al guardar la firma: \n$e',
-                maxLines: 5,
-                overflow: TextOverflow.ellipsis,
-              ),
-            duration: const Duration(seconds: 6),
-          ),
-        );
       }finally{
-        setState(() => _isSaving = false);
+        if (mounted) {
+          setState(() => _isSaving = false);
+        }
       }
     });
   }
@@ -156,7 +159,6 @@ class _FirmaDocumentoPageState extends State<FirmaDocumentoPage> {
 
   @override
   Widget build(BuildContext context) {
-    final doc = widget.documento;
     final esHorizontal = MediaQuery.of(context).orientation == Orientation.landscape;
 
    /*
@@ -223,94 +225,108 @@ class _FirmaDocumentoPageState extends State<FirmaDocumentoPage> {
     final formatoFecha = DateFormat('dd/MM/yyyy');
     final horaActual = DateFormat('HH:mm').format(DateTime.now());
 
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child:Row(
-        children: [
-          //Area de datos
-          Expanded(
-              flex: 2,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-
-                children: [
-                  Text('Documento: ${doc.tipoDocumento}'),
-                  Text('Nº: ${doc.numero}'),
-                  Text('Fecha: ${formatoFecha.format(doc.fecha)}'),
-                  Text('Hora: $horaActual'),
-                  Text('Base: ${doc.baseTotal.toStringAsFixed(2)} €'),
-                  Text('Total: ${doc.total.toStringAsFixed(2)} €'),
-                  const SizedBox(height: 24),
-                  Row(
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            //Area de datos - scroll vertical si no cabe
+            Expanded(
+                flex: 2,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      ElevatedButton.icon(
-                        onPressed: _isSaving ? null : _guardarFirmaDocumento,
-                        icon: Icon(Icons.check),
-                        label: const Text('Guardar Firma'),
-                      ),
-                      const SizedBox(width: 20),
-                      OutlinedButton.icon(
-                        onPressed: _isSaving ? null : () => Navigator.pop(context),
-                        icon: const Icon(Icons.cancel),
-                        label: const Text('Cancelar'),
+                      Text('Documento: ${doc.tipoDocumento}', overflow: TextOverflow.ellipsis, textAlign: TextAlign.center),
+                      Text('Nº: ${doc.numero}', overflow: TextOverflow.ellipsis),
+                      Text('Fecha: ${formatoFecha.format(doc.fecha)}', overflow: TextOverflow.ellipsis),
+                      Text('Hora: $horaActual', overflow: TextOverflow.ellipsis),
+                      Text('Base: ${doc.baseTotal.toStringAsFixed(2)} €', overflow: TextOverflow.ellipsis),
+                      Text('Total: ${doc.total.toStringAsFixed(2)} €', overflow: TextOverflow.ellipsis),
+                      const SizedBox(height: 20),
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 12,
+                        runSpacing: 8,
+                        children: [
+                          ElevatedButton.icon(
+                            onPressed: _isSaving ? null : _guardarFirmaDocumento,
+                            icon: const Icon(Icons.check),
+                            label: const Text('Guardar Firma'),
+                          ),
+                          OutlinedButton.icon(
+                            onPressed: _isSaving ? null : () => Navigator.pop(context),
+                            icon: const Icon(Icons.cancel),
+                            label: const Text('Cancelar'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-          ),
-          const SizedBox(width: 16),
-          //Area de firma
-          Expanded(
-            flex: 3,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 8,),
-                Row(
+                ),
+            ),
+            const SizedBox(width: 12),
+            //Area de firma
+            Expanded(
+              flex: 3,
+              child: SingleChildScrollView(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('FIRMA AQUI:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, letterSpacing: 1.5)),
-                    const SizedBox(width: 12),
-                    Icon(Icons.edit, size: 14, color: Colors.grey[600]),
-                    const SizedBox(width: 4),
-                    Text('Apple Pencil OK', style: TextStyle(fontSize: 10, color: Colors.grey[600])),
+                    const SizedBox(height: 4),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('FIRMA AQUI:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, letterSpacing: 1.5)),
+                          const SizedBox(width: 12),
+                          Icon(Icons.edit, size: 14, color: Colors.grey[600]),
+                          const SizedBox(width: 4),
+                          Text('Apple Pencil OK', style: TextStyle(fontSize: 10, color: Colors.grey[600])),
+                        ],
+                      ),
+                    ),
+                    if (_fotoPath != null) Padding(padding: const EdgeInsets.only(top: 4), child: Text('📸 ${ _fotoPath!.split('/').last}', style: const TextStyle(color: Colors.green, fontSize: 10), overflow: TextOverflow.ellipsis, maxLines: 1)),
+                    if (_lat != 0) Text('📍 ${_lat.toStringAsFixed(4)}, ${_lng.toStringAsFixed(4)}', style: const TextStyle(fontSize: 10, color: Colors.blue), overflow: TextOverflow.ellipsis),
+                    const SizedBox(height: 4),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final hasSize = doc.ancho > 0 && doc.largo > 0 && doc.ancho < 500 && doc.largo < 500;
+                        double w = hasSize ? (doc.ancho.toDouble() * 4).clamp(280, 600) : 500;
+                        double h = hasSize ? (doc.largo.toDouble() * 4).clamp(120, 220) : 200;
+                        if (constraints.maxWidth.isFinite) w = w.clamp(0, constraints.maxWidth);
+                        // Limitar altura para evitar overflow vertical en landscape bajo
+                        final maxH = MediaQuery.of(context).size.height * 0.52;
+                        h = h.clamp(120, maxH);
+                        return Container(
+                          width: w,
+                          height: h,
+                          decoration: BoxDecoration(border: Border.all(color: Colors.black), color: Colors.grey[200], borderRadius: BorderRadius.circular(8)),
+                          child: ClipRRect(borderRadius: BorderRadius.circular(8), child: Signature(controller: _controller, backgroundColor: Colors.white)),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        const Icon(Icons.brush, size: 14),
+                        Expanded(child: Slider(value: _strokeWidth, min: 1, max: 6, divisions: 5, label: _strokeWidth.toStringAsFixed(1), onChanged: (v) { final oldEmpty = _controller.isEmpty; _controller.dispose(); setState(() { _strokeWidth = v; _controller = SignatureController(penStrokeWidth: _strokeWidth, penColor: Colors.black, exportBackgroundColor: Colors.white); if (!oldEmpty) {} }); })),
+                        IconButton(icon: const Icon(Icons.camera_alt, size: 18), tooltip: 'Foto entrega', onPressed: _pickFoto, visualDensity: VisualDensity.compact),
+                        IconButton(icon: const Icon(Icons.location_on, size: 18), tooltip: 'Ubicación', onPressed: _captureGeo, visualDensity: VisualDensity.compact),
+                        IconButton(icon: const Icon(Icons.clear, size: 18), tooltip: 'Borrar', onPressed: () => _controller.clear(), visualDensity: VisualDensity.compact),
+                      ],
+                    ),
                   ],
                 ),
-                if (_fotoPath != null) Padding(padding: const EdgeInsets.only(top: 4), child: Text('📸 ${ _fotoPath!.split('/').last}', style: const TextStyle(color: Colors.green, fontSize: 10), overflow: TextOverflow.ellipsis)),
-                if (_lat != 0) Text('📍 ${_lat.toStringAsFixed(4)}, ${_lng.toStringAsFixed(4)}', style: const TextStyle(fontSize: 10, color: Colors.blue)),
-                const SizedBox(height: 4),
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    final hasSize = doc.ancho > 0 && doc.largo > 0 && doc.ancho < 500 && doc.largo < 500;
-                    double w = hasSize ? (doc.ancho.toDouble() * 4).clamp(280, 600) : 500;
-                    double h = hasSize ? (doc.largo.toDouble() * 4).clamp(120, 280) : 220;
-                    if (constraints.maxWidth.isFinite) w = w.clamp(0, constraints.maxWidth);
-                    return Container(
-                      width: w,
-                      height: h,
-                      decoration: BoxDecoration(border: Border.all(color: Colors.black), color: Colors.grey[200], borderRadius: BorderRadius.circular(8)),
-                      child: ClipRRect(borderRadius: BorderRadius.circular(8), child: Signature(controller: _controller, backgroundColor: Colors.white)),
-                    );
-                  },
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    const Icon(Icons.brush, size: 14),
-                    Expanded(child: Slider(value: _strokeWidth, min: 1, max: 6, divisions: 5, label: _strokeWidth.toStringAsFixed(1), onChanged: (v) { final oldEmpty = _controller.isEmpty; _controller.dispose(); setState(() { _strokeWidth = v; _controller = SignatureController(penStrokeWidth: _strokeWidth, penColor: Colors.black, exportBackgroundColor: Colors.white); if (!oldEmpty) {} }); })),
-                    IconButton(icon: const Icon(Icons.camera_alt, size: 18), tooltip: 'Foto entrega', onPressed: _pickFoto),
-                    IconButton(icon: const Icon(Icons.location_on, size: 18), tooltip: 'Ubicación', onPressed: _captureGeo),
-                    IconButton(icon: const Icon(Icons.clear, size: 18), tooltip: 'Borrar', onPressed: () => _controller.clear()),
-                  ],
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
-      ) ,
+          ],
+        ) ,
+      ),
     );
   }
 
