@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-enum OptionHome{Pendientes, Albaranes }
+enum OptionHome{pendientes, albaranes }
 class HomeCard extends StatelessWidget {
   final IconData icon;
   final String label;

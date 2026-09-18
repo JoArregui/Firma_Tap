@@ -11,25 +11,32 @@ class SelectUserPage extends StatefulWidget {
 class _SelectUserPageState extends State<SelectUserPage> {
   final TextEditingController _controller = TextEditingController();
 
-  void _confirmar() async {
-    final id = int.tryParse(_controller.text);
-    if (id == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Introduce un ID válido')),
-      );
-      return;
-    }
-
-    final prefs = await SharedPreferences.getInstance();
-    final empresa = prefs.getString('empresa');
-    await prefs.setInt('usuarioId', id);
-
-
-    Navigator.pop(context, {
-      'usuarioId': id,
-      'empresa': empresa, // Puedes hacer esto dinámico si lo deseas
-    });
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
+
+  void _confirmar() async {
+  final id = int.tryParse(_controller.text);
+  if (id == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Introduce un ID válido')),
+    );
+    return;
+  }
+
+  final prefs = await SharedPreferences.getInstance();
+  final empresa = prefs.getString('empresa');
+  await prefs.setInt('usuarioId', id);
+
+  if (!mounted) return; // <-- guard tras los await
+
+  Navigator.pop(context, {
+    'usuarioId': id,
+    'empresa': empresa,
+  });
+}
 
 
   @override

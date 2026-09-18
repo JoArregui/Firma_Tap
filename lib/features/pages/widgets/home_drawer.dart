@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class HomeDrawer extends StatelessWidget {
   final int usuarioId;
@@ -21,8 +20,8 @@ class HomeDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
-            decoration: const BoxDecoration(color: Colors.indigo),
+          const DrawerHeader(
+            decoration: BoxDecoration(color: Colors.indigo),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               ),
@@ -30,7 +29,7 @@ class HomeDrawer extends StatelessWidget {
 
           ListTile(
             leading: const Icon(Icons.settings),
-            title: const Text("Configuración"),
+            title: const Text('Configuración'),
             onTap: () {
               Navigator.pop(context);
               onConfig();

@@ -115,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
           _goToDocumentos(id, emp);
           return;
         } else {
-          if (mounted)
+          if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text(
@@ -123,6 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             );
+          }
           return;
         }
       }
@@ -133,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
         _goToDocumentos(uid2, emp2);
         return;
       }
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
@@ -141,11 +142,13 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         );
+      }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Biometría error: $e')));
+      }
     }
   }
 
@@ -210,7 +213,7 @@ class _LoginPageState extends State<LoginPage> {
             );
             await prefs.setBool('biometria_ofrecida', true);
             await prefs.setBool('biometria_habilitada', true);
-            if (mounted)
+            if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
@@ -218,6 +221,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               );
+            }
           } else {
             String detail;
             switch (code) {
@@ -238,10 +242,11 @@ class _LoginPageState extends State<LoginPage> {
                     ? 'No se pudo activar [$code]'
                     : 'No se pudo activar';
             }
-            if (mounted)
+            if (mounted) {
               ScaffoldMessenger.of(
                 context,
               ).showSnackBar(SnackBar(content: Text(detail)));
+            }
             await prefs.setBool('biometria_ofrecida', true);
           }
         } else if (quiere == false) {
@@ -380,7 +385,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           )
                         : DropdownButtonFormField<EmpresaDTO>(
-                            value: _empresas.contains(_empresaSeleccionada)
+                            initialValue: _empresas.contains(_empresaSeleccionada)
                                 ? _empresaSeleccionada
                                 : null,
                             isExpanded: true,

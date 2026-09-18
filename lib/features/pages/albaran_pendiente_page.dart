@@ -26,7 +26,7 @@ class _AlbaranPendientePageState extends State<AlbaranPendientePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Arbaranes pendientes:'),
+        title: const Text('Arbaranes pendientes:'),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         centerTitle: true,
@@ -37,7 +37,7 @@ class _AlbaranPendientePageState extends State<AlbaranPendientePage> {
           {
             if(snapshot.connectionState == ConnectionState.waiting)
             {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             }
