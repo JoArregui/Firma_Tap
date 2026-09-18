@@ -1,6 +1,6 @@
-import 'package:app_control_albaranes/features/Services/albaran_service.dart';
-import 'package:app_control_albaranes/features/models/Albaran_dto.dart';
-import 'package:app_control_albaranes/features/models/documento_dto.dart';
+import 'package:firma_tap/features/services/albaran_service.dart';
+import 'package:firma_tap/features/models/albaran_dto.dart';
+import 'package:firma_tap/features/models/documento_dto.dart';
 
 import '../models/firma_dto.dart';
 

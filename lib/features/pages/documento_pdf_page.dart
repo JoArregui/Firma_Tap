@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:app_control_albaranes/core/constants/api_constants.dart';
-import 'package:app_control_albaranes/core/share/share_service.dart';
-import 'package:app_control_albaranes/features/models/documento_dto.dart';
-import 'package:app_control_albaranes/features/pages/firma_documento_page.dart';
+import 'package:firma_tap/core/constants/api_constants.dart';
+import 'package:firma_tap/core/share/share_service.dart';
+import 'package:firma_tap/features/models/documento_dto.dart';
+import 'package:firma_tap/features/pages/firma_documento_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';

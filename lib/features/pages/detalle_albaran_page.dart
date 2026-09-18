@@ -1,9 +1,9 @@
-import 'package:app_control_albaranes/core/storage/auth_storage.dart';
-import 'package:app_control_albaranes/core/utils/date_formatter.dart';
+import 'package:firma_tap/core/storage/auth_storage.dart';
+import 'package:firma_tap/core/utils/date_formatter.dart';
 import 'package:flutter/material.dart';
 
-import '../Repositories/albaran_repository.dart';
-import '../models/Albaran_dto.dart';
+import '../repositories/albaran_repository.dart';
+import '../models/albaran_dto.dart';
 import '../models/documento_dto.dart';
 
 class DetalleAlbaranPage extends StatefulWidget {

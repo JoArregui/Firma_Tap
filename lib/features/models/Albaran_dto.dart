@@ -1,4 +1,4 @@
-import 'package:app_control_albaranes/features/models/cliente_dto.dart';
+import 'package:firma_tap/features/models/cliente_dto.dart';
 
 class AlbaranDto
 {

@@ -1,21 +1,21 @@
-import 'package:app_control_albaranes/core/auth/biometric_service.dart';
-import 'package:app_control_albaranes/core/storage/auth_storage.dart';
-import 'package:app_control_albaranes/features/pages/Configuration_page.dart';
-import 'package:app_control_albaranes/features/pages/analytics_page.dart';
-import 'package:app_control_albaranes/features/pages/documentos_page.dart';
-import 'package:app_control_albaranes/features/pages/historial_page.dart';
-import 'package:app_control_albaranes/features/pages/login_page.dart';
-import 'package:app_control_albaranes/features/pages/roles_page.dart';
-import 'package:app_control_albaranes/features/pages/select_user_page.dart';
-import 'package:app_control_albaranes/features/pages/widgets/home_card.dart';
-import 'package:app_control_albaranes/features/pages/widgets/home_navigation_rail.dart';
+import 'package:firma_tap/core/auth/biometric_service.dart';
+import 'package:firma_tap/core/storage/auth_storage.dart';
+import 'package:firma_tap/features/pages/configuration_page.dart';
+import 'package:firma_tap/features/pages/analytics_page.dart';
+import 'package:firma_tap/features/pages/documentos_page.dart';
+import 'package:firma_tap/features/pages/historial_page.dart';
+import 'package:firma_tap/features/pages/login_page.dart';
+import 'package:firma_tap/features/pages/roles_page.dart';
+import 'package:firma_tap/features/pages/select_user_page.dart';
+import 'package:firma_tap/features/pages/widgets/home_card.dart';
+import 'package:firma_tap/features/pages/widgets/home_navigation_rail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/utils/animated_routes.dart';
-import '../Services/empresa_service.dart';
+import '../services/empresa_service.dart';
 import '../models/empresa_dto.dart';
 
 class HomePage extends StatefulWidget {

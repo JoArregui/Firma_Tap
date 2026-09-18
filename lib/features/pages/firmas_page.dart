@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:app_control_albaranes/features/Services/firma_service.dart';
+import 'package:firma_tap/features/services/firma_service.dart';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
 
-import 'package:app_control_albaranes/features/models/documento_dto.dart';
+import 'package:firma_tap/features/models/documento_dto.dart';
 
 class FirmasPage extends StatefulWidget {
   final DocumentoDto doc;
