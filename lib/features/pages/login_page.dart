@@ -1,8 +1,8 @@
-import 'package:app_control_albaranes/core/auth/biometric_service.dart';
-import 'package:app_control_albaranes/core/storage/auth_storage.dart';
-import 'package:app_control_albaranes/features/services/empresa_service.dart';
-import 'package:app_control_albaranes/features/models/empresa_dto.dart';
-import 'package:app_control_albaranes/features/pages/home_page.dart';
+import 'package:firma_tap/core/auth/biometric_service.dart';
+import 'package:firma_tap/core/storage/auth_storage.dart';
+import 'package:firma_tap/features/services/empresa_service.dart';
+import 'package:firma_tap/features/models/empresa_dto.dart';
+import 'package:firma_tap/features/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';

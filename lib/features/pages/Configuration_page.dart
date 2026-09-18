@@ -1,10 +1,10 @@
-import 'package:app_control_albaranes/features/pages/home_page.dart';
+import 'package:firma_tap/features/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Services/empresa_service.dart';
+import '../services/empresa_service.dart';
 import '../models/empresa_dto.dart';
 
 class ConfigurationPage extends StatefulWidget {

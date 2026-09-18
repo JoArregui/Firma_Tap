@@ -4,7 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/offline/queue_service.dart';
 import '../../core/storage/history_service.dart';
 import '../../core/media/foto_geo_service.dart';
-import '../Services/firma_service.dart';
+import '../services/firma_service.dart';
 import '../models/documento_dto.dart';
 
 /// Firma en lote: swipe horizontal entre documentos con una sola firma reutilizable

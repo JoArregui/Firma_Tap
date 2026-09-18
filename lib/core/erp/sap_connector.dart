@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:app_control_albaranes/core/env.dart';
-import 'package:app_control_albaranes/core/network/api_client.dart';
+import 'package:firma_tap/core/env.dart';
+import 'package:firma_tap/core/network/api_client.dart';
 import 'package:flutter/foundation.dart';
 
 class SapConnector {

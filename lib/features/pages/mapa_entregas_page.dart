@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:app_control_albaranes/core/storage/history_service.dart';
+import 'package:firma_tap/core/storage/history_service.dart';
 
 class MapaEntregasPage extends StatefulWidget {
   const MapaEntregasPage({super.key});

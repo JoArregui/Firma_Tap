@@ -1,7 +1,7 @@
-import 'package:app_control_albaranes/core/media/foto_geo_service.dart';
-import 'package:app_control_albaranes/core/offline/queue_service.dart';
-import 'package:app_control_albaranes/core/storage/history_service.dart';
-import 'package:app_control_albaranes/features/Services/firma_service.dart';
+import 'package:firma_tap/core/media/foto_geo_service.dart';
+import 'package:firma_tap/core/offline/queue_service.dart';
+import 'package:firma_tap/core/storage/history_service.dart';
+import 'package:firma_tap/features/services/firma_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';

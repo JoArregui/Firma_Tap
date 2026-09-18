@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart' show MediaType; 
 import 'package:workmanager/workmanager.dart';
 
-import '../../features/Services/firma_service.dart';
+import '../../features/services/firma_service.dart';
 
 // ---------------------------------------------------------------------------
 // Workmanager callback (top-level, requerido por Android)
