@@ -184,7 +184,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                       ? const CircularProgressIndicator()
                       .animate()
                       .fadeIn(duration: 400.ms)
-                      .scale(begin: Offset(0.8, 0.8), curve: Curves.easeOut)
+                      .scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOut)
                       : DropdownButton<EmpresaDTO>(
                     value: _empresas.contains(_empresaSeleccionada) ? _empresaSeleccionada : null,
                     isExpanded: true,
@@ -204,7 +204,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                         }
 
                         final ok = await _pedirPassword();
-                        if (!mounted) return;
+                        if (!context.mounted) return;
                         if (ok) {
                           _guardarEmpresa(value);
                         } else {

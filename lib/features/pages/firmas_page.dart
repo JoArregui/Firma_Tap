@@ -37,45 +37,49 @@ class _FirmasPageState extends State<FirmasPage> {
     setState(() => _isSaving = true);
 
     try {
-
       //Mostrar dialogo de carga
       await showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => const AlertDialog(
-            content: Row(
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(width: 16,),
-                Expanded(child: Text('Enviando Firma...')),
-              ],
-            ),
+        context: context,
+        barrierDismissible: false,
+        builder: (dialogContext) => const AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 16),
+              Expanded(child: Text('Enviando Firma...')),
+            ],
           ),
+        ),
       );
 
       final jpgByte = await FirmaService.convertirFirmaABytesJpg(
-          controller: _controller,
+        controller: _controller,
       );
-      
-await FirmaService.enviarFirma(
-          jpgBytes: jpgByte,
-          codigoEmpresa: widget.doc.codigoEmpresa ?? 'Desconocido',
-          tipoDocumento: widget.doc.tipoDocumento ?? 'Desconocido',
-          numero: widget.doc.numero,
-          usuario: widget.doc.usuario.toString(),
-        );
-      
+
+      await FirmaService.enviarFirma(
+        jpgBytes: jpgByte,
+        codigoEmpresa: widget.doc.codigoEmpresa ?? 'Desconocido',
+        tipoDocumento: widget.doc.tipoDocumento ?? 'Desconocido',
+        numero: widget.doc.numero,
+        usuario: widget.doc.usuario.toString(),
+      );
+
+      if (!mounted) return;
+
       Navigator.of(context, rootNavigator: true).pop(); //Cierra el dialogo
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Firma enviada correctamente')),
       );
       Navigator.pop(context);
     } catch (e) {
+      if (!mounted) return;
+
       Navigator.of(context, rootNavigator: true).pop(); //Cierra el dialogo
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error al guardar la firma: $e',
+          content: Text(
+            'Error al guardar la firma: $e',
             maxLines: 5,
             overflow: TextOverflow.ellipsis,
           ),
@@ -83,7 +87,9 @@ await FirmaService.enviarFirma(
         ),
       );
     } finally {
-      setState(() => _isSaving = false);
+      if (mounted) {
+        setState(() => _isSaving = false);
+      }
     }
   }
 

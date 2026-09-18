@@ -246,7 +246,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                     topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                     rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                   ),
-                  gridData: FlGridData(show: true, drawVerticalLine: false),
+                  gridData: const FlGridData(show: true, drawVerticalLine: false),
                   borderData: FlBorderData(show: false),
                   barGroups: List.generate(keys.length, (i) {
                     return BarChartGroupData(
@@ -356,7 +356,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                   maxX: (keys.length - 1).toDouble(),
                   minY: 0,
                   maxY: yMax,
-                  gridData: FlGridData(show: true, drawVerticalLine: false),
+                  gridData: const FlGridData(show: true, drawVerticalLine: false),
                   borderData: FlBorderData(show: false),
                   titlesData: FlTitlesData(
                     bottomTitles: AxisTitles(
@@ -392,7 +392,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                       isCurved: true,
                       color: const Color.fromARGB(255, 0, 47, 108),
                       barWidth: 3,
-                      dotData: FlDotData(show: true),
+                      dotData: const FlDotData(show: true),
                       belowBarData: BarAreaData(
                         show: true,
                         color: const Color.fromARGB(255, 0, 47, 108).withValues(alpha: 0.15),

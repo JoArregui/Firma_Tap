@@ -17,8 +17,8 @@ class HomeNavigationRail extends StatelessWidget {
       backgroundColor: Colors.white,
 
       groupAlignment: -1,
-        leading: Column(
-          children: const [
+        leading: const Column(
+          children: [
             SizedBox(height: 8),
           ],
         ),
@@ -26,11 +26,11 @@ class HomeNavigationRail extends StatelessWidget {
       destinations: const [
         NavigationRailDestination(
           icon: Icon(Icons.description),
-          label: Text("Pendientes"),
+          label: Text('Pendientes'),
         ),
         NavigationRailDestination(
           icon: Icon(Icons.settings),
-          label: Text("Configuración"),
+          label: Text('Configuración'),
         ),
       ],
 
@@ -42,7 +42,7 @@ class HomeNavigationRail extends StatelessWidget {
               onPressed: () => onSelect(99),
               icon: const Icon(Icons.close, color: Colors.red),
               label: const Text(
-                "Cerrar app",
+                'Cerrar app',
                 style: TextStyle(color: Colors.black),
               ),
             ),

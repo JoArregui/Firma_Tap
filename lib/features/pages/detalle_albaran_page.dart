@@ -38,30 +38,30 @@ class _DetalleAlbaranPageState extends State<DetalleAlbaranPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Albaran ${albaran.numero}")
+        title: Text('Albaran ${albaran.numero}')
       ),
       body: Padding(padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Cliente: ${widget.albaran.cliente.nombre}', style: TextStyle(fontSize: 18)),
-          SizedBox(height: 8),
-          Text("Dirección: ${widget.albaran.cliente.direccion}"),
-          SizedBox(height: 8),
-          Text("Fecha: ${DateFormatter.format(widget.albaran.fecha)}"),
-          SizedBox(height: 8),
-          Text("Estado: ${widget.albaran.estado}"),
-          SizedBox(height: 24),
+          Text('Cliente: ${widget.albaran.cliente.nombre}', style: const TextStyle(fontSize: 18)),
+          const SizedBox(height: 8),
+          Text('Dirección: ${widget.albaran.cliente.direccion}'),
+          const SizedBox(height: 8),
+          Text('Fecha: ${DateFormatter.format(widget.albaran.fecha)}'),
+          const SizedBox(height: 8),
+          Text('Estado: ${widget.albaran.estado}'),
+          const SizedBox(height: 24),
           Expanded(
               child: FutureBuilder<List<DocumentoDto>>(
                   future: futureDocumentos,
                   builder: (context, snapshot){
                     if(snapshot.connectionState == ConnectionState.waiting){
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     }else if(snapshot.hasError){
                       return Text('Error: ${snapshot.error}');
                     }else if(!snapshot.hasData || snapshot.data!.isEmpty){
-                      return Text('No hay documentos disponibles');
+                      return const Text('No hay documentos disponibles');
                     }
 
                     final documentos = snapshot.data!;

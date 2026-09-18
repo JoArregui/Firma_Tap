@@ -89,7 +89,7 @@ class _LoteFirmaPageState extends State<LoteFirmaPage> {
   Widget build(BuildContext context) {
     final total = widget.documentos.length;
     return Scaffold(
-      appBar: AppBar(title: Text('Lote ${total} documentos'), backgroundColor: const Color(0xFF002F6C), foregroundColor: Colors.white),
+      appBar: AppBar(title: Text('Lote $total documentos'), backgroundColor: const Color(0xFF002F6C), foregroundColor: Colors.white),
       body: Column(
         children: [
           LinearProgressIndicator(value: (total == 0) ? 0 : (_idx + 1) / total),
