@@ -55,6 +55,7 @@ jobs:
     needs: test
     steps:
       - uses: actions/checkout@v4
+      
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
@@ -63,18 +64,5 @@ jobs:
       - run: flutter config --no-enable-swift-package-manager
       - run: flutter pub get
 
-      - name: Generate Xcode Ephemeral Configs
-        run: |
-          # Crea el directorio efímero si no existe
-          mkdir -p ios/Flutter/ephemeral
-          # Invoca la generación interna de archivos xcconfig de Flutter
-          dart run flutter_tools:generate_localizations || true
-          flutter build ios-framework --output=build/ios/framework --no-debug --no-profile || true
-
-      - name: Install CocoaPods
-        run: |
-          cd ios
-          pod install --repo-update
-
-      - name: Build iOS
+      - name: Build iOS App
         run: flutter build ios --release --no-codesign
