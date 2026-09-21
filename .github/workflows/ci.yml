@@ -61,6 +61,8 @@ jobs:
           cache: true
       - run: flutter config --no-enable-swift-package-manager
       - run: flutter pub get
+      # Genera la estructura ephemera (Flutter-Generated.xcconfig) necesaria para Podfile
+      - run: flutter build ios --config-only --release --no-codesign
       - name: Install CocoaPods
         run: |
           cd ios
