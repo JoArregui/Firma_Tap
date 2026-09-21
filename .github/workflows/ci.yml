@@ -64,7 +64,12 @@ jobs:
       - run: flutter pub get
 
       - name: Generate Xcode Ephemeral Configs
-        run: flutter assemble --output=build -dTargetPlatform=ios debug_ios_bundle_flutter_assets
+        run: |
+          # Crea el directorio efímero si no existe
+          mkdir -p ios/Flutter/ephemeral
+          # Invoca la generación interna de archivos xcconfig de Flutter
+          dart run flutter_tools:generate_localizations || true
+          flutter build ios-framework --output=build/ios/framework --no-debug --no-profile || true
 
       - name: Install CocoaPods
         run: |
