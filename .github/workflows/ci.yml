@@ -49,7 +49,7 @@ jobs:
       - run: flutter pub get
       - run: flutter build apk --release
 
- build-ios:
+  build-ios:
     name: build-ios --no-codesign
     runs-on: macos-latest
     needs: test
