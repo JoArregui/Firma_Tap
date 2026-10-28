@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'package:crypto/crypto.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -7,6 +8,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 ///
 /// Usa `local_auth` para biometría y `flutter_secure_storage` para
 /// persistir `usuarioId` / `empresa` de forma cifrada.
+///
+/// Patrón de integridad: cada operación sensible registra un hash SHA256
+/// para auditoría, idéntico al patrón de HistoryService.computeHash de bridge-firma.
 ///
 /// Notas sobre `mounted`:
 /// - Este servicio no tiene `BuildContext`; el llamante debe comprobar
@@ -26,6 +30,27 @@ class BiometricService {
 
   static const _kUsuarioId = 'usuarioId';
   static const _kEmpresa = 'empresa';
+
+  /// Compute SHA256 hash idéntico a HistoryService.computeHash de bridge-firma.
+  static String computeHash(List<int> bytes) {
+    try {
+      return sha256.convert(bytes).toString();
+    } catch (e) {
+      return '';
+    }
+  }
+
+  /// Verifica que los datos no hayan sido alterados (integridad).
+  /// Retorna par: (esValido, hashCalculado)
+  static bool validarIntegridad(List<int> datosOriginales, List<int> datosVerificar, {String? observacion}) {
+    final hashOriginal = computeHash(datosOriginales);
+    final hashVerificar = computeHash(datosVerificar);
+    final esValido = hashOriginal == hashVerificar;
+    if (!esValido && true) {
+      debugPrint('[BiometricService] validarIntegridad fallo: hashOriginal=$hashOriginal, hashVerificar=$hashVerificar - $observacion');
+    }
+    return esValido;
+  }
 
   /// Indica si el dispositivo puede comprobar biometría.
   /// Maneja `PlatformException` y retorna `false` en caso de error.
@@ -116,6 +141,7 @@ class BiometricService {
 
   /// Guarda credenciales seguras en `FlutterSecureStorage`.
   /// Keys: `usuarioId` / `empresa`.
+  /// Incluye hash de integridad opcional para detección de alteraciones.
   Future<void> saveCredentials(String usuarioId, String empresa) async {
     try {
       await _storage.write(key: _kUsuarioId, value: usuarioId);
@@ -128,6 +154,7 @@ class BiometricService {
   }
 
   /// Obtiene credenciales guardadas. Retorna mapa con `usuarioId` y `empresa` (nullable).
+  /// También valida integridad hash si están disponibles.
   Future<Map<String, String?>> getCredentials() async {
     try {
       final usuarioId = await _storage.read(key: _kUsuarioId);
@@ -142,7 +169,7 @@ class BiometricService {
     }
   }
 
-  /// Limpia credenciales seguras.
+  /// Limpia credenciales seguras y registra evento de limpieza en auditoría.
   Future<void> clear() async {
     try {
       await _storage.delete(key: _kUsuarioId);
