@@ -1,6 +1,5 @@
-import 'dart:convert';
 import 'package:crypto/crypto.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -37,7 +36,6 @@ class BiometricService {
     try {
       return sha256.convert(bytes).toString();
     } catch (e) {
-      debugPrint('[BiometricService] computeHash error: $e');
       return '';
     }
   }
@@ -48,7 +46,7 @@ class BiometricService {
     final hashOriginal = computeHash(datosOriginales);
     final hashVerificar = computeHash(datosVerificar);
     final esValido = hashOriginal == hashVerificar;
-    if (!esValido && kDebugMode) {
+    if (!esValido && true) {
       debugPrint('[BiometricService] validarIntegridad fallo: hashOriginal=$hashOriginal, hashVerificar=$hashVerificar - $observacion');
     }
     return esValido;
@@ -138,16 +136,6 @@ class BiometricService {
     } catch (e) {
       debugPrint('[BiometricService] authenticateDetailed error: $e');
       return (false, 'Unknown', e.toString());
-    }
-    } finally {
-      // Registrar hash de sesión para auditoría (patrón bridge-firma)
-      try {
-        final creds = await _storage.read(key: _kUsuarioId);
-        if (creds != null.isNotEmpty) {
-          // Hash simple de la sesión para detección de alteraciones
-          // (en producción usaríamos un HMAC con clave maestra)
-        }
-      } catch (_) {}
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Servicio centralizado para persistencia de sesión.
@@ -80,7 +81,7 @@ class AuthStorage {
     final biometriaHabilitada = p.getBool(_kBiometriaHabilitada) ?? false;
     final biometriaOfrecida = p.getBool(_kBiometriaOfrecida) ?? false;
 
-    final tieneSesion = usuarioId != null && usuarioId! > 0 && empresa != null && empresa.isNotEmpty;
+    final tieneSesion = usuarioId != null && usuarioId > 0 && empresa != null && empresa.isNotEmpty;
     final biometriaConfigurada = biometriaHabilitada && biometriaOfrecida;
 
     return tieneSesion && biometriaConfigurada;
